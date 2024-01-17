@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">MobileAssignment</string>
+    <string name="message">Hello World from Peter</string>
+    <string name="button_message">Click Me</string>
 </resources>
