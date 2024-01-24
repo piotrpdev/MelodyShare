@@ -4,4 +4,6 @@
     <string name="button_message">Kliknij mnie</string>
     <string name="app_name">PrzydziałMobilny</string>
     <string name="button_pressed_time_s">Przycisk naciśnięty %1$d raz(y)</string>
+    <string name="darkModeBtnText">Tryb Ciemny</string>
+    <string name="lightModeBtnText">Tryb Świetlny</string>
 </resources>

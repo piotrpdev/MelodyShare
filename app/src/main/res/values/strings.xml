@@ -3,4 +3,6 @@
     <string name="message">Hello World from Peter</string>
     <string name="button_message">Click Me</string>
     <string name="button_pressed_time_s">Button pressed %1$d time(s)</string>
+    <string name="darkModeBtnText">Dark Mode</string>
+    <string name="lightModeBtnText">Light Mode</string>
 </resources>
