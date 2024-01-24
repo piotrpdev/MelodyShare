@@ -1,6 +1,5 @@
 package ie.setu.mobileassignment
 
-import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -17,7 +16,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
     }
 
-    @SuppressLint("SetTextI18n")
     fun clickMe(view: View) {
         buttonPressedCount++
 
@@ -25,7 +23,9 @@ class MainActivity : AppCompatActivity() {
             R.string.message,
             Toast.LENGTH_LONG).show()
 
-        findViewById<TextView>(R.id.btnTextView).text = "Button pressed $buttonPressedCount time(s)"
-        log.info{"Button pressed $buttonPressedCount time(s)"}
+        val message = getString(R.string.button_pressed_time_s, buttonPressedCount)
+
+        findViewById<TextView>(R.id.btnTextView).text = message
+        log.info{message}
     }
 }
