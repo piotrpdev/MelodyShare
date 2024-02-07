@@ -9,12 +9,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.ajalt.timberkt.i
 import com.google.android.material.materialswitch.MaterialSwitch
+import ie.setu.mobileassignment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
 
     private fun updateSwitchBasedOnTheme() {
-        val themeSwitch = findViewById<MaterialSwitch>(R.id.themeSwitch)
+        val themeSwitch = binding.themeSwitch
         themeSwitch.isSaveEnabled = false
 
         when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
@@ -33,7 +35,8 @@ class MainActivity : AppCompatActivity() {
     // This is a test comment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         i { "MainActivity started." }
 
@@ -49,7 +52,7 @@ class MainActivity : AppCompatActivity() {
 
         val message = getString(R.string.button_pressed_time_s, buttonPressedCount)
 
-        findViewById<TextView>(R.id.btnTextView).text = message
+        binding.btnTextView.text = message
         i { message }
     }
 
