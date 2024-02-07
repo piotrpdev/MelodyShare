@@ -5,14 +5,19 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
+import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.mobileassignment.R
 import dev.piotrp.mobileassignment.databinding.ActivityMainBinding
+import dev.piotrp.mobileassignment.models.PlacemarkModel
 
+// TODO: Change to better name
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
+    // TODO: Maybe move to Application for persistence
+    private val placemarks = ArrayList<PlacemarkModel>()
 
     private fun updateSwitchBasedOnTheme() {
         val themeSwitch = binding.themeSwitch
@@ -47,12 +52,18 @@ class MainActivity : AppCompatActivity() {
 
         val title = binding.titleTextField.editText?.text.toString()
         val messageId = if (title.isBlank() || title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
-
         val message = getString(messageId, binding.titleTextField.editText?.text.toString())
+
+        val description = binding.descriptionTextField.editText?.text.toString()
+
+        placemarks.add(PlacemarkModel(title, description))
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
+
+        i { "Placemark added with title \"$title\" and description \"$description\" " }
+        d { "Full placemark ArrayList: $placemarks" }
     }
 
     fun onThemeSwitchToggle(view: View) {
