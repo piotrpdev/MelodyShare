@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.ajalt.timberkt.i
 import com.google.android.material.materialswitch.MaterialSwitch
+import com.google.android.material.snackbar.Snackbar
 import ie.setu.mobileassignment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -46,9 +47,9 @@ class MainActivity : AppCompatActivity() {
     fun clickMe(view: View) {
         buttonPressedCount++
 
-        Toast.makeText(this,
-            R.string.message,
-            Toast.LENGTH_LONG).show()
+        Snackbar
+            .make(binding.root, R.string.message, Snackbar.LENGTH_LONG)
+            .show()
 
         val message = getString(R.string.button_pressed_time_s, buttonPressedCount)
 
