@@ -42,17 +42,17 @@ class MainActivity : AppCompatActivity() {
         updateSwitchBasedOnTheme()
     }
 
-    fun clickMe(view: View) {
+    fun onAddPlacemarkClicked(view: View) {
         buttonPressedCount++
 
+        val title = binding.titleTextField.editText?.text.toString()
+        val messageId = if (title.isBlank() || title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
+
+        val message = getString(messageId, binding.titleTextField.editText?.text.toString())
+
         Snackbar
-            .make(binding.root, R.string.message, Snackbar.LENGTH_LONG)
+            .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
-
-        val message = getString(R.string.button_pressed_time_s, buttonPressedCount)
-
-        binding.btnTextView.text = message
-        i { message }
     }
 
     fun onThemeSwitchToggle(view: View) {

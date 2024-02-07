@@ -1,8 +1,10 @@
 <resources>
     <string name="app_name">MobileAssignment</string>
-    <string name="message">Hello World from Peter</string>
-    <string name="button_message">Click Me</string>
-    <string name="button_pressed_time_s">Button pressed %1$d time(s)</string>
+    <string name="button_message">Add Placemark</string>
     <string name="darkModeBtnText">Dark Mode</string>
     <string name="lightModeBtnText">Light Mode</string>
+    <string name="title">Title</string>
+    <string name="description">Description</string>
+    <string name="button_clicked_message">Placemark \"%1$s\" Added</string>
+    <string name="button_clicked_message_titleless">Added placemark without title</string>
 </resources>

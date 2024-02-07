@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="message">Witaj świecie od Piotra</string>
-    <string name="button_message">Kliknij mnie</string>
+    <string name="button_message">Dodaj znak miejsca</string>
     <string name="app_name">PrzydziałMobilny</string>
-    <string name="button_pressed_time_s">Przycisk naciśnięty %1$d raz(y)</string>
     <string name="darkModeBtnText">Tryb Ciemny</string>
     <string name="lightModeBtnText">Tryb Świetlny</string>
+    <string name="title">Tytuł</string>
+    <string name="description">Opis</string>
+    <string name="button_clicked_message">Dodano znacznik \"%1$s\"</string>
+    <string name="button_clicked_message_titleless">Dodano znacznik bez tytułu</string>
 </resources>
