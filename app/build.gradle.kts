@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "ie.setu.mobileassignment"
+    namespace = "dev.piotrp.mobileassignment"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "ie.setu.mobileassignment"
+        applicationId = "dev.piotrp.mobileassignment"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

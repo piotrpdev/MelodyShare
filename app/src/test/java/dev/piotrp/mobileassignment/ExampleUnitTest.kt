@@ -1,4 +1,4 @@
-package ie.setu.mobileassignment
+package dev.piotrp.mobileassignment
 
 import org.junit.Test
 

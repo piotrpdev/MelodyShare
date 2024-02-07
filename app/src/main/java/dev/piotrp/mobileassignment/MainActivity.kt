@@ -1,16 +1,13 @@
-package ie.setu.mobileassignment
+package dev.piotrp.mobileassignment
 
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.github.ajalt.timberkt.i
-import com.google.android.material.materialswitch.MaterialSwitch
 import com.google.android.material.snackbar.Snackbar
-import ie.setu.mobileassignment.databinding.ActivityMainBinding
+import dev.piotrp.mobileassignment.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding

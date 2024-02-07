@@ -1,4 +1,4 @@
-package ie.setu.mobileassignment
+package dev.piotrp.mobileassignment
 
 import android.app.Application
 import com.github.ajalt.timberkt.Timber
