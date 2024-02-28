@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "dev.piotrp.mobileassignment"
+    namespace = "dev.piotrp.melodyshare"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "dev.piotrp.mobileassignment"
+        applicationId = "dev.piotrp.melodyshare"
         minSdk = 30
         targetSdk = 34
         versionCode = 1

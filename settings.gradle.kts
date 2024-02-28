@@ -13,5 +13,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "MobileAssignment"
+rootProject.name = "MelodyShare"
 include(":app")
