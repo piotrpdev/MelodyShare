@@ -6,6 +6,22 @@
     android:layout_height="match_parent"
     tools:context=".activities.MainActivity">
 
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:backgroundTint="?attr/colorPrimary"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="?attr/actionBarSize"
+            app:titleTextColor= "?attr/colorOnPrimary"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
     <com.google.android.material.materialswitch.MaterialSwitch
         android:id="@+id/themeSwitch"
         android:layout_width="wrap_content"
@@ -13,10 +29,10 @@
         android:layout_marginTop="24dp"
         android:layout_marginEnd="32dp"
         android:onClick="onThemeSwitchToggle"
-        android:text="@string/darkModeBtnText"
         android:saveEnabled="false"
+        android:text="@string/darkModeBtnText"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/appBarLayout" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/titleTextField"
