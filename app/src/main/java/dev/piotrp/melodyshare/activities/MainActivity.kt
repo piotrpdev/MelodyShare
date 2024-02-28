@@ -1,6 +1,5 @@
 package dev.piotrp.melodyshare.activities
 
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.Menu
@@ -68,6 +67,7 @@ class MainActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onAddPlacemarkClicked(view: View) {
         buttonPressedCount++
 
@@ -90,6 +90,7 @@ class MainActivity : AppCompatActivity() {
         finish()
     }
 
+    @Suppress("UNUSED_PARAMETER")
     fun onThemeSwitchToggle(view: View) {
         // TODO: Move switch to main activity
         var currentlyDark = false

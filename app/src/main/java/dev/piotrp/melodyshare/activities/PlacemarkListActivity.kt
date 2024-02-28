@@ -2,21 +2,16 @@ package dev.piotrp.melodyshare.activities
 
 import android.app.Activity
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.PlacemarkAdapter
 import dev.piotrp.melodyshare.databinding.ActivityPlacemarkListBinding
-import dev.piotrp.melodyshare.databinding.CardPlacemarkBinding
-import dev.piotrp.melodyshare.models.PlacemarkModel
 
 class PlacemarkListActivity : AppCompatActivity() {
     private lateinit var app: MyApp
