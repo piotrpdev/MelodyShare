@@ -65,9 +65,13 @@ class MainActivity : AppCompatActivity() {
 
         i { "Placemark added with title \"$title\" and description \"$description\" " }
         d { "Full placemark ArrayList: ${app.placemarks}" }
+
+        setResult(RESULT_OK)
+        finish()
     }
 
     fun onThemeSwitchToggle(view: View) {
+        // TODO: Move switch to main activity
         var currentlyDark = false
 
         when ((resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK)) {
