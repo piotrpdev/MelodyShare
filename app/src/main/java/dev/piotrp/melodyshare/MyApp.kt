@@ -1,4 +1,4 @@
-package dev.piotrp.mobileassignment
+package dev.piotrp.melodyshare
 
 import android.app.Application
 import com.github.ajalt.timberkt.Timber

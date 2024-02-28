@@ -1,4 +1,4 @@
-package dev.piotrp.mobileassignment.activities
+package dev.piotrp.melodyshare.activities
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -8,9 +8,9 @@ import androidx.appcompat.app.AppCompatDelegate
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
-import dev.piotrp.mobileassignment.R
-import dev.piotrp.mobileassignment.databinding.ActivityMainBinding
-import dev.piotrp.mobileassignment.models.PlacemarkModel
+import dev.piotrp.melodyshare.R
+import dev.piotrp.melodyshare.databinding.ActivityMainBinding
+import dev.piotrp.melodyshare.models.PlacemarkModel
 
 // TODO: Change to better name
 class MainActivity : AppCompatActivity() {

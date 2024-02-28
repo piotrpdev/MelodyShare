@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MobileAssignment</string>
+    <string name="app_name">MelodyShare</string>
     <string name="button_message">Add Placemark</string>
     <string name="darkModeBtnText">Dark Mode</string>
     <string name="lightModeBtnText">Light Mode</string>
