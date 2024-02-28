@@ -8,4 +8,5 @@
     <string name="button_clicked_message">Placemark \"%1$s\" Added</string>
     <string name="button_clicked_message_titleless">Added placemark without title</string>
     <string name="menu_addPlacemark">Add</string>
+    <string name="menu_cancelPlacemark">Cancel</string>
 </resources>
