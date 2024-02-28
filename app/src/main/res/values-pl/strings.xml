@@ -8,4 +8,5 @@
     <string name="description">Opis</string>
     <string name="button_clicked_message">Dodano znacznik \"%1$s\"</string>
     <string name="button_clicked_message_titleless">Dodano znacznik bez tytułu</string>
+    <string name="menu_addPlacemark">Dodaj</string>
 </resources>
