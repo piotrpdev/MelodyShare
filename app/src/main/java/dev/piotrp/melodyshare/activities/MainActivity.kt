@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         placemark.title = binding.titleTextField.editText?.text.toString()
         placemark.description = binding.descriptionTextField.editText?.text.toString()
 
-        var messageId = -1
+        val messageId: Int
 
         if (intent.hasExtra("placemark_edit")) {
             messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
