@@ -55,6 +55,7 @@ class MainActivity : AppCompatActivity() {
             placemark = intent.extras?.getParcelable("placemark_edit")!!
             binding.titleTextField.editText?.setText(placemark.title)
             binding.descriptionTextField.editText?.setText(placemark.description)
+            binding.button.text = getString(R.string.save_placemark)
         }
 
         updateSwitchBasedOnTheme()

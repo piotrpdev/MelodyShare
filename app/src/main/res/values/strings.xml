@@ -9,4 +9,5 @@
     <string name="button_clicked_message_titleless">Added placemark without title</string>
     <string name="menu_addPlacemark">Add</string>
     <string name="menu_cancelPlacemark">Cancel</string>
+    <string name="save_placemark">Save Placemark</string>
 </resources>
