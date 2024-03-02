@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.PlacemarkAdapter
+import dev.piotrp.melodyshare.adapters.PlacemarkListener
 import dev.piotrp.melodyshare.databinding.ActivityPlacemarkListBinding
+import dev.piotrp.melodyshare.models.PlacemarkModel
 
-class PlacemarkListActivity : AppCompatActivity() {
+class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
     private lateinit var app: MyApp
     private lateinit var binding: ActivityPlacemarkListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,7 +28,7 @@ class PlacemarkListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = PlacemarkAdapter(app.placemarks)
+        binding.recyclerView.adapter = PlacemarkAdapter(app.placemarks.findAll(), this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -50,7 +52,13 @@ class PlacemarkListActivity : AppCompatActivity() {
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0, app.placemarks.size)
+                notifyItemRangeChanged(0, app.placemarks.findAll().size)
             }
         }
+
+    override fun onPlacemarkClick(placemark: PlacemarkModel) {
+        val launcherIntent = Intent(this, MainActivity::class.java)
+        launcherIntent.putExtra("placemark_edit", placemark)
+        getResult.launch(launcherIntent)
+    }
 }

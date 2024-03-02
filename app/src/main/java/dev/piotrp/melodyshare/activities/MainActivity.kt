@@ -19,6 +19,7 @@ import dev.piotrp.melodyshare.models.PlacemarkModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
+    private var placemark = PlacemarkModel()
     private lateinit var app: MyApp
 
     private fun updateSwitchBasedOnTheme() {
@@ -49,6 +50,14 @@ class MainActivity : AppCompatActivity() {
         app = application as MyApp
         i { "MainActivity started." }
 
+        if (intent.hasExtra("placemark_edit")) {
+            @Suppress("DEPRECATION")
+            placemark = intent.extras?.getParcelable("placemark_edit")!!
+            binding.titleTextField.editText?.setText(placemark.title)
+            binding.descriptionTextField.editText?.setText(placemark.description)
+            binding.button.text = getString(R.string.save_placemark)
+        }
+
         updateSwitchBasedOnTheme()
     }
 
@@ -71,19 +80,28 @@ class MainActivity : AppCompatActivity() {
     fun onAddPlacemarkClicked(view: View) {
         buttonPressedCount++
 
-        val title = binding.titleTextField.editText?.text.toString()
-        val messageId = if (title.isBlank() || title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
-        val message = getString(messageId, binding.titleTextField.editText?.text.toString())
+        placemark.title = binding.titleTextField.editText?.text.toString()
+        placemark.description = binding.descriptionTextField.editText?.text.toString()
 
-        val description = binding.descriptionTextField.editText?.text.toString()
+        val messageId: Int
 
-        app.placemarks.add(PlacemarkModel(title, description))
+        if (intent.hasExtra("placemark_edit")) {
+            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
+
+            app.placemarks.update(placemark.copy())
+        } else {
+            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
+
+            app.placemarks.create(placemark.copy())
+        }
+
+        val message = getString(messageId, placemark.title)
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
 
-        i { "Placemark added with title \"$title\" and description \"$description\" " }
+        i { "Placemark added/saved with title \"${placemark.title}\" and description \"${placemark.description}\" " }
         d { "Full placemark ArrayList: ${app.placemarks}" }
 
         setResult(RESULT_OK)
