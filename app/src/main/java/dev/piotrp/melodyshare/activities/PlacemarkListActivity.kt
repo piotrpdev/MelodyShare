@@ -58,6 +58,7 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
 
     override fun onPlacemarkClick(placemark: PlacemarkModel) {
         val launcherIntent = Intent(this, MainActivity::class.java)
+        launcherIntent.putExtra("placemark_edit", placemark)
         getResult.launch(launcherIntent)
     }
 }

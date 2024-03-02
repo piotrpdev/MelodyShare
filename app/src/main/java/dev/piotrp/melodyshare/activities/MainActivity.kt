@@ -19,6 +19,7 @@ import dev.piotrp.melodyshare.models.PlacemarkModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
+    private var placemark = PlacemarkModel()
     private lateinit var app: MyApp
 
     private fun updateSwitchBasedOnTheme() {
@@ -49,6 +50,13 @@ class MainActivity : AppCompatActivity() {
         app = application as MyApp
         i { "MainActivity started." }
 
+        if (intent.hasExtra("placemark_edit")) {
+            @Suppress("DEPRECATION")
+            placemark = intent.extras?.getParcelable("placemark_edit")!!
+            binding.titleTextField.editText?.setText(placemark.title)
+            binding.descriptionTextField.editText?.setText(placemark.description)
+        }
+
         updateSwitchBasedOnTheme()
     }
 
@@ -71,19 +79,19 @@ class MainActivity : AppCompatActivity() {
     fun onAddPlacemarkClicked(view: View) {
         buttonPressedCount++
 
-        val title = binding.titleTextField.editText?.text.toString()
+        placemark.title = binding.titleTextField.editText?.text.toString()
         val messageId = if (title.isBlank() || title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
         val message = getString(messageId, binding.titleTextField.editText?.text.toString())
 
-        val description = binding.descriptionTextField.editText?.text.toString()
+        placemark.description = binding.descriptionTextField.editText?.text.toString()
 
-        app.placemarks.create(PlacemarkModel(title, description))
+        app.placemarks.create(placemark.copy())
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
 
-        i { "Placemark added with title \"$title\" and description \"$description\" " }
+        i { "Placemark added with title \"${placemark.title}\" and description \"${placemark.description}\" " }
         d { "Full placemark ArrayList: ${app.placemarks}" }
 
         setResult(RESULT_OK)
