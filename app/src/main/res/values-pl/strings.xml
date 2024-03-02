@@ -11,4 +11,6 @@
     <string name="menu_addPlacemark">Dodaj</string>
     <string name="menu_cancelPlacemark">Anuluj</string>
     <string name="save_placemark">Zapisz znak miejsca</string>
+    <string name="button_clicked_message_saved">Zapisano znacznik \"%1$s\"</string>
+    <string name="button_clicked_message_saved_titleless">Zapisano znacznik bez tytułu</string>
 </resources>

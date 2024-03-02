@@ -81,18 +81,27 @@ class MainActivity : AppCompatActivity() {
         buttonPressedCount++
 
         placemark.title = binding.titleTextField.editText?.text.toString()
-        val messageId = if (title.isBlank() || title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
-        val message = getString(messageId, binding.titleTextField.editText?.text.toString())
-
         placemark.description = binding.descriptionTextField.editText?.text.toString()
 
-        app.placemarks.create(placemark.copy())
+        var messageId = -1
+
+        if (intent.hasExtra("placemark_edit")) {
+            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
+
+            app.placemarks.update(placemark.copy())
+        } else {
+            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
+
+            app.placemarks.create(placemark.copy())
+        }
+
+        val message = getString(messageId, placemark.title)
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
 
-        i { "Placemark added with title \"${placemark.title}\" and description \"${placemark.description}\" " }
+        i { "Placemark added/saved with title \"${placemark.title}\" and description \"${placemark.description}\" " }
         d { "Full placemark ArrayList: ${app.placemarks}" }
 
         setResult(RESULT_OK)

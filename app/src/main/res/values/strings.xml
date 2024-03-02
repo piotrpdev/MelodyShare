@@ -10,4 +10,6 @@
     <string name="menu_addPlacemark">Add</string>
     <string name="menu_cancelPlacemark">Cancel</string>
     <string name="save_placemark">Save Placemark</string>
+    <string name="button_clicked_message_saved">Placemark \"%1$s\" Saved</string>
+    <string name="button_clicked_message_saved_titleless">Saved placemark without title</string>
 </resources>
