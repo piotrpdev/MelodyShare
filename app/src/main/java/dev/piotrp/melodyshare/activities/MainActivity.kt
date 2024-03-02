@@ -13,13 +13,13 @@ import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
-import dev.piotrp.melodyshare.models.PlacemarkModel
+import dev.piotrp.melodyshare.models.MelodyModel
 
 // TODO: Change to better name
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
-    private var placemark = PlacemarkModel()
+    private var melody = MelodyModel()
     private lateinit var app: MyApp
 
     private fun updateSwitchBasedOnTheme() {
@@ -50,12 +50,12 @@ class MainActivity : AppCompatActivity() {
         app = application as MyApp
         i { "MainActivity started." }
 
-        if (intent.hasExtra("placemark_edit")) {
+        if (intent.hasExtra("melody_edit")) {
             @Suppress("DEPRECATION")
-            placemark = intent.extras?.getParcelable("placemark_edit")!!
-            binding.titleTextField.editText?.setText(placemark.title)
-            binding.descriptionTextField.editText?.setText(placemark.description)
-            binding.button.text = getString(R.string.save_placemark)
+            melody = intent.extras?.getParcelable("melody_edit")!!
+            binding.titleTextField.editText?.setText(melody.title)
+            binding.descriptionTextField.editText?.setText(melody.description)
+            binding.button.text = getString(R.string.save_melody)
         }
 
         updateSwitchBasedOnTheme()
@@ -77,32 +77,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     @Suppress("UNUSED_PARAMETER")
-    fun onAddPlacemarkClicked(view: View) {
+    fun onAddMelodyClicked(view: View) {
         buttonPressedCount++
 
-        placemark.title = binding.titleTextField.editText?.text.toString()
-        placemark.description = binding.descriptionTextField.editText?.text.toString()
+        melody.title = binding.titleTextField.editText?.text.toString()
+        melody.description = binding.descriptionTextField.editText?.text.toString()
 
         val messageId: Int
 
-        if (intent.hasExtra("placemark_edit")) {
-            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
+        if (intent.hasExtra("melody_edit")) {
+            messageId = if (melody.title.isBlank() || melody.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
 
-            app.placemarks.update(placemark.copy())
+            app.melodies.update(melody.copy())
         } else {
-            messageId = if (placemark.title.isBlank() || placemark.title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
+            messageId = if (melody.title.isBlank() || melody.title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
 
-            app.placemarks.create(placemark.copy())
+            app.melodies.create(melody.copy())
         }
 
-        val message = getString(messageId, placemark.title)
+        val message = getString(messageId, melody.title)
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
             .show()
 
-        i { "Placemark added/saved with title \"${placemark.title}\" and description \"${placemark.description}\" " }
-        d { "Full placemark ArrayList: ${app.placemarks}" }
+        i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
+        d { "Full melody ArrayList: ${app.melodies}" }
 
         setResult(RESULT_OK)
         finish()

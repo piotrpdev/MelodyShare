@@ -14,7 +14,7 @@
         android:theme="@style/Theme.MelodyShare"
         tools:targetApi="31">
         <activity
-            android:name=".activities.PlacemarkListActivity"
+            android:name=".activities.MelodyListActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
