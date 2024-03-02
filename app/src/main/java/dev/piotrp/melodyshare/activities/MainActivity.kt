@@ -77,7 +77,7 @@ class MainActivity : AppCompatActivity() {
 
         val description = binding.descriptionTextField.editText?.text.toString()
 
-        app.placemarks.add(PlacemarkModel(title, description))
+        app.placemarks.create(PlacemarkModel(title, description))
 
         Snackbar
             .make(binding.root, message, Snackbar.LENGTH_LONG)
