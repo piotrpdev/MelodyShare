@@ -12,7 +12,7 @@
         android:padding="16dp">
 
         <TextView
-            android:id="@+id/placemarkTitle"
+            android:id="@+id/melodyTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
@@ -20,10 +20,10 @@
             tools:text="A Title" />
 
         <TextView
-            android:id="@+id/placemarkDescription"
+            android:id="@+id/melodyDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/placemarkTitle"
+            android:layout_below="@id/melodyTitle"
             android:textAppearance="?attr/textAppearanceBodyMedium"
             tools:text="A Description" />
 

@@ -10,17 +10,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
-import dev.piotrp.melodyshare.adapters.PlacemarkAdapter
-import dev.piotrp.melodyshare.adapters.PlacemarkListener
-import dev.piotrp.melodyshare.databinding.ActivityPlacemarkListBinding
-import dev.piotrp.melodyshare.models.PlacemarkModel
+import dev.piotrp.melodyshare.adapters.MelodyAdapter
+import dev.piotrp.melodyshare.adapters.MelodyListener
+import dev.piotrp.melodyshare.databinding.ActivityMelodyListBinding
+import dev.piotrp.melodyshare.models.MelodyModel
 
-class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
+class MelodyListActivity : AppCompatActivity(), MelodyListener {
     private lateinit var app: MyApp
-    private lateinit var binding: ActivityPlacemarkListBinding
+    private lateinit var binding: ActivityMelodyListBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityPlacemarkListBinding.inflate(layoutInflater)
+        binding = ActivityMelodyListBinding.inflate(layoutInflater)
         binding.topAppBar.title = title
         setSupportActionBar(binding.topAppBar)
         setContentView(binding.root)
@@ -28,7 +28,7 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = PlacemarkAdapter(app.placemarks.findAll(), this)
+        binding.recyclerView.adapter = MelodyAdapter(app.melodies.findAll(), this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -52,13 +52,13 @@ class PlacemarkListActivity : AppCompatActivity(), PlacemarkListener {
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
                 (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0, app.placemarks.findAll().size)
+                notifyItemRangeChanged(0, app.melodies.findAll().size)
             }
         }
 
-    override fun onPlacemarkClick(placemark: PlacemarkModel) {
+    override fun onMelodyClick(melody: MelodyModel) {
         val launcherIntent = Intent(this, MainActivity::class.java)
-        launcherIntent.putExtra("placemark_edit", placemark)
+        launcherIntent.putExtra("melody_edit", melody)
         getResult.launch(launcherIntent)
     }
 }

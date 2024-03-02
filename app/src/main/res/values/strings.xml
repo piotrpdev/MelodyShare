@@ -1,15 +1,15 @@
 <resources>
     <string name="app_name">MelodyShare</string>
-    <string name="button_message">Add Placemark</string>
+    <string name="button_message">Add Melody</string>
     <string name="darkModeBtnText">Dark Mode</string>
     <string name="lightModeBtnText">Light Mode</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
-    <string name="button_clicked_message">Placemark \"%1$s\" Added</string>
-    <string name="button_clicked_message_titleless">Added placemark without title</string>
-    <string name="menu_addPlacemark">Add</string>
-    <string name="menu_cancelPlacemark">Cancel</string>
-    <string name="save_placemark">Save Placemark</string>
-    <string name="button_clicked_message_saved">Placemark \"%1$s\" Saved</string>
-    <string name="button_clicked_message_saved_titleless">Saved placemark without title</string>
+    <string name="button_clicked_message">Melody \"%1$s\" added</string>
+    <string name="button_clicked_message_titleless">Added melody without title</string>
+    <string name="menu_addMelody">Add</string>
+    <string name="menu_cancelMelody">Cancel</string>
+    <string name="save_melody">Save Melody</string>
+    <string name="button_clicked_message_saved">Melody \"%1$s\" Saved</string>
+    <string name="button_clicked_message_saved_titleless">Saved Melody without title</string>
 </resources>
