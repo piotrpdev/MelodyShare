@@ -13,4 +13,5 @@
     <string name="save_melody">Zapisz melodię</string>
     <string name="button_clicked_message_saved">Zapisano melodię \"%1$s\"</string>
     <string name="button_clicked_message_saved_titleless">Zapisano melodię bez tytułu</string>
+    <string name="sign_in">Zaloguj się</string>
 </resources>
