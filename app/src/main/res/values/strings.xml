@@ -13,4 +13,5 @@
     <string name="button_clicked_message_saved">Melody \"%1$s\" Saved</string>
     <string name="button_clicked_message_saved_titleless">Saved Melody without title</string>
     <string name="sign_in">Sign in</string>
+    <string name="sign_in_fail">User sign-in failed</string>
 </resources>

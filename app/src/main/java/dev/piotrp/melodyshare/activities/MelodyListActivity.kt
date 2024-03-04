@@ -13,7 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
+import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
@@ -97,38 +99,29 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
                         // There's something already here! Finish the sign-in for your user.
                         pendingResultTask
                             .addOnSuccessListener {
-                                // TODO: handle this
-                                // User is signed in.
-                                // IdP data available in
-                                // authResult.getAdditionalUserInfo().getProfile().
-                                // The OAuth access token can also be retrieved:
-                                // ((OAuthCredential)authResult.getCredential()).getAccessToken().
-                                // The OAuth secret can be retrieved by calling:
-                                // ((OAuthCredential)authResult.getCredential()).getSecret().
+                                i { "User sign-in success: ${it.user}" }
+                                setUserIconToAvatar(item)
                             }
                             .addOnFailureListener {
-                                // TODO: handle this
-                                // Handle failure.
+                                i { "User sign-in failure" }
+                                e { it.toString() }
+                                Snackbar
+                                    .make(binding.root, R.string.sign_in_fail, Snackbar.LENGTH_LONG)
+                                    .show()
                             }
                     } else {
                         auth
                             .startActivityForSignInWithProvider(this, provider.build())
                             .addOnSuccessListener {
-                                // TODO: handle this
-                                // User is signed in.
-                                // IdP data available in
-                                // authResult.getAdditionalUserInfo().getProfile().
-                                // The OAuth access token can also be retrieved:
-                                // ((OAuthCredential)authResult.getCredential()).getAccessToken().
-                                // The OAuth secret can be retrieved by calling:
-                                // ((OAuthCredential)authResult.getCredential()).getSecret().
                                 i { "User sign-in success: ${it.user}" }
                                 setUserIconToAvatar(item)
                             }
                             .addOnFailureListener {
-                                // TODO: handle this
-                                // Handle failure.
                                 i { "User sign-in failure" }
+                                e { it.toString() }
+                                Snackbar
+                                    .make(binding.root, R.string.sign_in_fail, Snackbar.LENGTH_LONG)
+                                    .show()
                             }
                     }
                 } else {
