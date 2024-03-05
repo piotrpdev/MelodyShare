@@ -3,6 +3,8 @@ package dev.piotrp.melodyshare.activities
 import android.app.Activity
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.media.AudioAttributes
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -32,6 +34,7 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
     private lateinit var app: MyApp
     private lateinit var binding: ActivityMelodyListBinding
     private lateinit var auth: FirebaseAuth
+    private val mediaPlayer = MediaPlayer()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMelodyListBinding.inflate(layoutInflater)
@@ -45,6 +48,23 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         binding.recyclerView.adapter = MelodyAdapter(app.melodies.findAll(), this)
 
         auth = Firebase.auth
+        playMidi()
+    }
+
+    private fun playMidi() {
+        // https://commons.wikimedia.org/wiki/File:Bach,_Invention_no._4_in_D_minor_BMV_775,_mm._1-4.mid
+        val midiFile = assets.openFd("BMV_775.mid")
+        mediaPlayer.apply {
+            setAudioAttributes(
+                AudioAttributes.Builder()
+                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                    .setUsage(AudioAttributes.USAGE_MEDIA)
+                    .build()
+            )
+            setDataSource(midiFile)
+            prepareAsync()
+            setOnPreparedListener { start() }
+        }
     }
 
     private fun setUserIconToAvatar(menuItem: MenuItem) {
