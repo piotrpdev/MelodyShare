@@ -64,37 +64,40 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
     // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115
     private fun createMidiFile(absoluteMidiPath: String) {
         i { "Creating new MIDI tracks" }
+        val tracks: MutableList<MidiTrack> = ArrayList()
+
         val tempoTrack = MidiTrack()
-        val noteTrack = MidiTrack()
-
-        val ts = TimeSignature()
-        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
-
-        val tempo = Tempo()
-        tempo.bpm = 228f
-
+        val ts = TimeSignature(0, 0, 4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
         tempoTrack.insertEvent(ts)
+
+        // Tempo is 228
+        val tempo = Tempo(0, 0, (60000000 / 228f).toInt())
         tempoTrack.insertEvent(tempo)
 
-        val noteCount = 80
+        tracks.add(tempoTrack)
+
+        val noteCount = 30
+        val noteTrack = MidiTrack()
 
         for (i in 0 until noteCount) {
+            // Usually each instrument gets own channel
             val channel = 0
-            val pitch = 1 + i
+            // 21 is the lowest note that will play
+            // 60 is middle C (C4)
+            // 88 is the highest piano key
+            val pitch = 60 + i
             val velocity = 100
+            // 480 = quarter note
             val tick = (i * 480).toLong()
-            val duration: Long = 120
+            val duration = 120.toLong()
             noteTrack.insertNote(channel, pitch, velocity, tick, duration)
         }
 
-        val tracks: MutableList<MidiTrack> = ArrayList()
-        tracks.add(tempoTrack)
         tracks.add(noteTrack)
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
 
         i { "Creating 'File' instance for MIDI at: $absoluteMidiPath" }
-
         val output = File(absoluteMidiPath)
 
         try {
