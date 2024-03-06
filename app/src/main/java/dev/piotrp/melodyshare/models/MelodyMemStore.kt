@@ -23,6 +23,7 @@ class MelodyMemStore : MelodyStore  {
         if (foundMelody != null) {
             foundMelody.title = melody.title
             foundMelody.description = melody.description
+            foundMelody.notes = melody.notes
             logAll()
         }
     }
