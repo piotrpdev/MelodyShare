@@ -56,13 +56,15 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
 
         auth = Firebase.auth
 
-        createMidiFile(this.filesDir.absolutePath + "examplemidi.mid")
-        playMidi(this.filesDir.absolutePath + "examplemidi.mid")
+        val midiFile = File(this.filesDir.absolutePath + "examplemidi.mid")
+
+        createMidiFile(midiFile)
+        playMidi(midiFile)
     }
 
     // MIT License, Copyright (c) 2017 Alex Leffelman
     // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115
-    private fun createMidiFile(absoluteMidiPath: String) {
+    private fun createMidiFile(file: File) {
         i { "Creating new MIDI tracks" }
         val tracks: MutableList<MidiTrack> = ArrayList()
 
@@ -97,19 +99,16 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
 
         val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
 
-        i { "Creating 'File' instance for MIDI at: $absoluteMidiPath" }
-        val output = File(absoluteMidiPath)
-
         try {
-            i { "Attempting to write MIDI to file" }
-            midi.writeToFile(output)
+            i { "Attempting to write MIDI to file at ${file.absolutePath}" }
+            midi.writeToFile(file)
         } catch (e: IOException) {
             System.err.println(e)
         }
     }
 
-    private fun playMidi(absoluteMidiPath: String) = run {
-        FileInputStream(absoluteMidiPath).use {
+    private fun playMidi(file: File) = run {
+        FileInputStream(file).use {
             mediaPlayer.apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
