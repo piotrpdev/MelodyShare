@@ -22,12 +22,19 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.leff.midi.MidiFile
+import com.leff.midi.MidiTrack
+import com.leff.midi.event.meta.Tempo
+import com.leff.midi.event.meta.TimeSignature
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.MelodyAdapter
 import dev.piotrp.melodyshare.adapters.MelodyListener
 import dev.piotrp.melodyshare.databinding.ActivityMelodyListBinding
 import dev.piotrp.melodyshare.models.MelodyModel
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
 
 
 class MelodyListActivity : AppCompatActivity(), MelodyListener {
@@ -48,22 +55,69 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         binding.recyclerView.adapter = MelodyAdapter(app.melodies.findAll(), this)
 
         auth = Firebase.auth
-        playMidi()
+
+        createMidiFile(this.filesDir.absolutePath + "examplemidi.mid")
+        playMidi(this.filesDir.absolutePath + "examplemidi.mid")
     }
 
-    private fun playMidi() {
-        // https://commons.wikimedia.org/wiki/File:Bach,_Invention_no._4_in_D_minor_BMV_775,_mm._1-4.mid
-        val midiFile = assets.openFd("BMV_775.mid")
-        mediaPlayer.apply {
-            setAudioAttributes(
-                AudioAttributes.Builder()
-                    .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                    .setUsage(AudioAttributes.USAGE_MEDIA)
-                    .build()
-            )
-            setDataSource(midiFile)
-            prepareAsync()
-            setOnPreparedListener { start() }
+    // MIT License, Copyright (c) 2017 Alex Leffelman
+    // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115
+    private fun createMidiFile(absoluteMidiPath: String) {
+        i { "Creating new MIDI tracks" }
+        val tempoTrack = MidiTrack()
+        val noteTrack = MidiTrack()
+
+        val ts = TimeSignature()
+        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
+
+        val tempo = Tempo()
+        tempo.bpm = 228f
+
+        tempoTrack.insertEvent(ts)
+        tempoTrack.insertEvent(tempo)
+
+        val noteCount = 80
+
+        for (i in 0 until noteCount) {
+            val channel = 0
+            val pitch = 1 + i
+            val velocity = 100
+            val tick = (i * 480).toLong()
+            val duration: Long = 120
+            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
+        }
+
+        val tracks: MutableList<MidiTrack> = ArrayList()
+        tracks.add(tempoTrack)
+        tracks.add(noteTrack)
+
+        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
+
+        i { "Creating 'File' instance for MIDI at: $absoluteMidiPath" }
+
+        val output = File(absoluteMidiPath)
+
+        try {
+            i { "Attempting to write MIDI to file" }
+            midi.writeToFile(output)
+        } catch (e: IOException) {
+            System.err.println(e)
+        }
+    }
+
+    private fun playMidi(absoluteMidiPath: String) = run {
+        FileInputStream(absoluteMidiPath).use {
+            mediaPlayer.apply {
+                setAudioAttributes(
+                    AudioAttributes.Builder()
+                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                        .setUsage(AudioAttributes.USAGE_MEDIA)
+                        .build()
+                )
+                setDataSource(it.fd)
+                prepareAsync()
+                setOnPreparedListener { start() }
+            }
         }
     }
 
