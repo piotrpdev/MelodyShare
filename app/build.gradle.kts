@@ -56,4 +56,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
+    implementation("com.github.LeffelMania:android-midi-lib:f8f2a6645")
 }

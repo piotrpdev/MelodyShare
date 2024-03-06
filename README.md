@@ -13,9 +13,3 @@ This app uses [Firebase](https://firebase.google.com/) so you need to set-up a p
 ## License
 
 The code in this repository is licensed under the [MIT License](https://opensource.org/license/mit), see [LICENSE.md](./LICENSE.md) for more details.
-
-## MIDI Sources
-
-All included MIDI files come from [Wikipedia Commons](https://commons.wikimedia.org/) and are licensed under [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.en). 
-
-- `BMV_775` - "Bach, Invention no. 4 in D minor BMV 775, mm. 1-4" uploaded by [Hyacinth](https://en.wikipedia.org/wiki/User:Hyacinth).
