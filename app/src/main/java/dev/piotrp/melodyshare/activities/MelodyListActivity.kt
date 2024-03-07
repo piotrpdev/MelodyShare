@@ -22,19 +22,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.leff.midi.MidiFile
-import com.leff.midi.MidiTrack
-import com.leff.midi.event.meta.Tempo
-import com.leff.midi.event.meta.TimeSignature
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.MelodyAdapter
 import dev.piotrp.melodyshare.adapters.MelodyListener
 import dev.piotrp.melodyshare.databinding.ActivityMelodyListBinding
 import dev.piotrp.melodyshare.models.MelodyModel
+import dev.piotrp.melodyshare.models.writeMidiToFile
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 
 
 class MelodyListActivity : AppCompatActivity(), MelodyListener {
@@ -56,54 +52,15 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
 
         auth = Firebase.auth
 
-        val midiFile = File(this.filesDir.absolutePath + "examplemidi.mid")
+        val risingMelody = app.melodies.findAll().find { it.title == "Rising Melody" }
 
-        createMidiFile(midiFile)
-        playMidi(midiFile)
-    }
+        if (risingMelody != null) {
+            val midiFile = File(this.filesDir.absolutePath + "${risingMelody.id}.mid")
 
-    // MIT License, Copyright (c) 2017 Alex Leffelman
-    // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115
-    private fun createMidiFile(file: File) {
-        i { "Creating new MIDI tracks" }
-        val tracks: MutableList<MidiTrack> = ArrayList()
-
-        val tempoTrack = MidiTrack()
-        val ts = TimeSignature(0, 0, 4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
-        tempoTrack.insertEvent(ts)
-
-        // Tempo is 228
-        val tempo = Tempo(0, 0, (60000000 / 228f).toInt())
-        tempoTrack.insertEvent(tempo)
-
-        tracks.add(tempoTrack)
-
-        val noteCount = 30
-        val noteTrack = MidiTrack()
-
-        for (i in 0 until noteCount) {
-            // Usually each instrument gets own channel
-            val channel = 0
-            // 21 is the lowest note that will play
-            // 60 is middle C (C4)
-            // 88 is the highest piano key
-            val pitch = 60 + i
-            val velocity = 100
-            // 480 = quarter note
-            val tick = (i * 480).toLong()
-            val duration = 120.toLong()
-            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
-        }
-
-        tracks.add(noteTrack)
-
-        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
-
-        try {
-            i { "Attempting to write MIDI to file at ${file.absolutePath}" }
-            midi.writeToFile(file)
-        } catch (e: IOException) {
-            System.err.println(e)
+            risingMelody.writeMidiToFile(midiFile)
+            playMidi(midiFile)
+        } else {
+            e { "'Rising Melody' not found" }
         }
     }
 
