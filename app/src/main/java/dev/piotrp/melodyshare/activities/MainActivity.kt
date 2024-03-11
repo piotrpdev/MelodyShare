@@ -1,6 +1,7 @@
 package dev.piotrp.melodyshare.activities
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -11,13 +12,14 @@ import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
-import dev.piotrp.melodyshare.adapters.MelodyAdapter
 import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
+import dev.piotrp.melodyshare.adapters.MelodyNoteListener
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
 import dev.piotrp.melodyshare.models.MelodyModel
+import dev.piotrp.melodyshare.models.MelodyNote
 
 // TODO: Change to better name
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MelodyNoteListener {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
@@ -33,7 +35,7 @@ class MainActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList())
+        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList(), this)
 
         app = application as MyApp
         i { "MainActivity started." }
@@ -43,7 +45,7 @@ class MainActivity : AppCompatActivity() {
             melody = intent.extras?.getParcelable("melody_edit")!!
             binding.titleTextField.editText?.setText(melody.title)
             binding.descriptionTextField.editText?.setText(melody.description)
-            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes)
+            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
 
             binding.button.text = getString(R.string.save_melody)
         }
@@ -94,5 +96,21 @@ class MainActivity : AppCompatActivity() {
 
         setResult(RESULT_OK)
         finish()
+    }
+
+    override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        i { "Pitch text changed for MelodyNote. Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
+    }
+
+    override fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        i { "Velocity text changed for MelodyNote. Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
+    }
+
+    override fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        i { "Tick text changed for MelodyNote. Old: ${melodyNote.tick}, New: ${editable.toString()}" }
+    }
+
+    override fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        i { "Duration text changed for MelodyNote. Old: ${melodyNote.duration}, New: ${editable.toString()}" }
     }
 }

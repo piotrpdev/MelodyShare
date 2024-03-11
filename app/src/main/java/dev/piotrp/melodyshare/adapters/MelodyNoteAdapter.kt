@@ -1,13 +1,22 @@
 package dev.piotrp.melodyshare.adapters
 
+import android.text.Editable
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
-import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
 
-class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
+interface MelodyNoteListener {
+    fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?)
+    fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?)
+    fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?)
+    fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?)
+
+}
+
+class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private val listener: MelodyNoteListener) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
         val binding = CardMelodyNoteBinding
             .inflate(LayoutInflater.from(parent.context), parent, false)
@@ -17,7 +26,7 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>) : Recycl
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val melody = melodyNotes[holder.adapterPosition]
-        holder.bind(melody)
+        holder.bind(melody, listener)
     }
 
     override fun getItemCount(): Int = melodyNotes.size
@@ -25,11 +34,16 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>) : Recycl
     class MainHolder(private val binding : CardMelodyNoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(melody: MelodyNote) {
+        fun bind(melody: MelodyNote, listener: MelodyNoteListener) {
             binding.pitchTextField.editText?.setText(melody.pitch.toString())
             binding.velocityTextField.editText?.setText(melody.velocity.toString())
             binding.tickTextField.editText?.setText(melody.tick.toString())
             binding.durationTextField.editText?.setText(melody.duration.toString())
+
+            binding.pitchTextField.editText?.doAfterTextChanged { listener.onMelodyNotePitchTextChanged(melody, it) }
+            binding.velocityTextField.editText?.doAfterTextChanged { listener.onMelodyNoteVelocityTextChanged(melody, it) }
+            binding.tickTextField.editText?.doAfterTextChanged { listener.onMelodyNoteTickTextChanged(melody, it) }
+            binding.durationTextField.editText?.doAfterTextChanged { listener.onMelodyNoteDurationTextChanged(melody, it) }
         }
     }
 }
