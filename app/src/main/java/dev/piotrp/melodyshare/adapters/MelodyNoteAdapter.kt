@@ -26,7 +26,10 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>) : Recycl
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(melody: MelodyNote) {
-            binding.melodyNoteTitle.text = melody.pitch.toString()
+            binding.pitchTextField.editText?.setText(melody.pitch.toString())
+            binding.velocityTextField.editText?.setText(melody.velocity.toString())
+            binding.tickTextField.editText?.setText(melody.tick.toString())
+            binding.durationTextField.editText?.setText(melody.duration.toString())
         }
     }
 }

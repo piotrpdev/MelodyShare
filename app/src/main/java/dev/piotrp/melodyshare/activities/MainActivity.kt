@@ -31,6 +31,10 @@ class MainActivity : AppCompatActivity() {
         binding.topAppBar.title = getString(R.string.button_message)
         setContentView(binding.root)
 
+        val layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList())
+
         app = application as MyApp
         i { "MainActivity started." }
 
@@ -39,9 +43,6 @@ class MainActivity : AppCompatActivity() {
             melody = intent.extras?.getParcelable("melody_edit")!!
             binding.titleTextField.editText?.setText(melody.title)
             binding.descriptionTextField.editText?.setText(melody.description)
-
-            val layoutManager = LinearLayoutManager(this)
-            binding.recyclerView.layoutManager = layoutManager
             binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes)
 
             binding.button.text = getString(R.string.save_melody)
