@@ -5,11 +5,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
+import dev.piotrp.melodyshare.adapters.MelodyAdapter
+import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
 import dev.piotrp.melodyshare.models.MelodyModel
 
@@ -36,6 +39,11 @@ class MainActivity : AppCompatActivity() {
             melody = intent.extras?.getParcelable("melody_edit")!!
             binding.titleTextField.editText?.setText(melody.title)
             binding.descriptionTextField.editText?.setText(melody.description)
+
+            val layoutManager = LinearLayoutManager(this)
+            binding.recyclerView.layoutManager = layoutManager
+            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes)
+
             binding.button.text = getString(R.string.save_melody)
         }
     }
