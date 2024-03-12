@@ -3,9 +3,10 @@ package dev.piotrp.melodyshare.models
 import timber.log.Timber.i
 
 var lastId = 0L
+
 internal fun getId() = lastId++
 
-class MelodyMemStore : MelodyStore  {
+class MelodyMemStore : MelodyStore {
     private val melodies = ArrayList<MelodyModel>()
 
     override fun findAll(): List<MelodyModel> {
@@ -29,6 +30,6 @@ class MelodyMemStore : MelodyStore  {
     }
 
     private fun logAll() {
-        melodies.forEach{ i("$it") }
+        melodies.forEach { i("$it") }
     }
 }

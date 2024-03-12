@@ -9,7 +9,13 @@ import kotlinx.parcelize.Parcelize
 import java.io.File
 
 @Parcelize
-data class MelodyModel(var id: Long = 0, var title: String = "", var description: String = "", var bpm: Float = 120f, var notes: ArrayList<MelodyNote> = ArrayList()) : Parcelable
+data class MelodyModel(
+    var id: Long = 0,
+    var title: String = "",
+    var description: String = "",
+    var bpm: Float = 120f,
+    var notes: ArrayList<MelodyNote> = ArrayList(),
+) : Parcelable
 
 // MIT License, Copyright (c) 2017 Alex Leffelman
 // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115

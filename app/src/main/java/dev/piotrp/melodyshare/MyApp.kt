@@ -8,8 +8,9 @@ import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
 import timber.log.Timber.i
 
-class MyApp  : Application() {
+class MyApp : Application() {
     val melodies = MelodyMemStore()
+
     override fun onCreate() {
         super.onCreate()
 

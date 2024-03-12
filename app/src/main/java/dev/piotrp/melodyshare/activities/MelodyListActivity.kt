@@ -32,12 +32,12 @@ import dev.piotrp.melodyshare.models.writeMidiToFile
 import java.io.File
 import java.io.FileInputStream
 
-
 class MelodyListActivity : AppCompatActivity(), MelodyListener {
     private lateinit var app: MyApp
     private lateinit var binding: ActivityMelodyListBinding
     private lateinit var auth: FirebaseAuth
     private val mediaPlayer = MediaPlayer()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMelodyListBinding.inflate(layoutInflater)
@@ -66,21 +66,22 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         }
     }
 
-    private fun playMidi(file: File) = run {
-        FileInputStream(file).use {
-            mediaPlayer.apply {
-                setAudioAttributes(
-                    AudioAttributes.Builder()
-                        .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                        .setUsage(AudioAttributes.USAGE_MEDIA)
-                        .build()
-                )
-                setDataSource(it.fd)
-                prepareAsync()
-                setOnPreparedListener { start() }
+    private fun playMidi(file: File) =
+        run {
+            FileInputStream(file).use {
+                mediaPlayer.apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .build(),
+                    )
+                    setDataSource(it.fd)
+                    prepareAsync()
+                    setOnPreparedListener { start() }
+                }
             }
         }
-    }
 
     private fun setUserIconToAvatar(menuItem: MenuItem) {
         val currentUser = auth.currentUser
@@ -95,17 +96,19 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
                 .asDrawable()
                 .circleCrop()
                 .load(currentUser.photoUrl)
-                .into(object : CustomTarget<Drawable?>() {
-                    override fun onResourceReady(
-                        resource: Drawable,
-                        transition: Transition<in Drawable?>?
-                    ) {
-                        i { "Setting account icon to user's photo" }
-                        menuItem.setIcon(resource)
-                    }
+                .into(
+                    object : CustomTarget<Drawable?>() {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable?>?,
+                        ) {
+                            i { "Setting account icon to user's photo" }
+                            menuItem.setIcon(resource)
+                        }
 
-                    override fun onLoadCleared(placeholder: Drawable?) {}
-                })
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    },
+                )
         }
     }
 
@@ -172,11 +175,11 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
 
     private val getResult =
         registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
+            ActivityResultContracts.StartActivityForResult(),
         ) {
             if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)?.
-                notifyItemRangeChanged(0, app.melodies.findAll().size)
+                (binding.recyclerView.adapter)
+                    ?.notifyItemRangeChanged(0, app.melodies.findAll().size)
             }
         }
 
