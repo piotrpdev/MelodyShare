@@ -15,5 +15,7 @@
     <string name="button_clicked_message_saved_titleless">Zapisano melodię bez tytułu</string>
     <string name="sign_in">Zaloguj się</string>
     <string name="sign_in_fail">Logowanie użytkownika nie powiodło się</string>
-    <string name="add_note">Dodaj nutę</string>
+    <string name="add_note">Dodaj Nutę</string>
+    <string name="remove_note">Usuń Nutę</string>
+    <string name="remove_melody">Usuń Melodię</string>
 </resources>
