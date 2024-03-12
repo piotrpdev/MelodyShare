@@ -6,4 +6,6 @@ interface MelodyStore {
     fun create(melody: MelodyModel)
 
     fun update(melody: MelodyModel)
+
+    fun remove(melody: MelodyModel)
 }

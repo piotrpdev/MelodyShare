@@ -29,6 +29,11 @@ class MelodyMemStore : MelodyStore {
         }
     }
 
+    override fun remove(melody: MelodyModel) {
+        melodies.removeIf { p -> p.id == melody.id }
+        logAll()
+    }
+
     private fun logAll() {
         melodies.forEach { i("$it") }
     }

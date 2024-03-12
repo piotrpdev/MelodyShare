@@ -194,4 +194,21 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         val launcherIntent = Intent(this, MainActivity::class.java)
         getResult.launch(launcherIntent)
     }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun onRemoveMelodyClicked(view: View) {
+        // TODO: Should remove based on ID or something predictable
+        val lastMelody = app.melodies.findAll().lastOrNull()
+
+        if (lastMelody == null) {
+            i { "No melodies to remove" }
+            return
+        }
+
+        i { "Removing melody (ID: ${lastMelody.id}, Title: ${lastMelody.title})" }
+
+        app.melodies.remove(lastMelody)
+        (binding.recyclerView.adapter)
+            ?.notifyItemRemoved(app.melodies.findAll().size + 1)
+    }
 }
