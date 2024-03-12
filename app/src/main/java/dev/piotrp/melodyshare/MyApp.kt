@@ -29,7 +29,7 @@ class MyApp  : Application() {
             // 480 = quarter note
             val tick = (i * 480).toLong()
             val duration = 120.toLong()
-            risingNotes.add(MelodyNote(pitch, velocity, tick, duration))
+            risingNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
         }
 
         val risingMelody = MelodyModel(0, "Rising Melody", "Rising Melody", 228f, risingNotes)
