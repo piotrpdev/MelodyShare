@@ -18,4 +18,8 @@
     <string name="add_note">Dodaj Nutę</string>
     <string name="remove_note">Usuń Nutę</string>
     <string name="remove_melody">Usuń Melodię</string>
+    <string name="feed">Nowe</string>
+    <string name="settings">Ustawienia</string>
+    <string name="likes">Polubienia</string>
+    <string name="friends">Znajomi</string>
 </resources>

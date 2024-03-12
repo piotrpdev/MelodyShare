@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/FeedFragment">
+
+    <!--TODO: Use actions https://stackoverflow.com/a/73659241/19020549-->
+
+    <fragment
+        android:id="@+id/FeedFragment"
+        android:name="dev.piotrp.melodyshare.fragments.FeedFragment"
+        tools:layout="@layout/fragment_feed">
+    </fragment>
+    <fragment
+        android:id="@+id/SecondFragment"
+        android:name="dev.piotrp.melodyshare.fragments.SecondFragment"
+        tools:layout="@layout/fragment_second">
+    </fragment>
+</navigation>
