@@ -1,4 +1,4 @@
-package dev.piotrp.melodyshare.activities
+package dev.piotrp.melodyshare.fragments
 
 import android.app.Activity
 import android.content.Intent
@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
 import dev.piotrp.melodyshare.MyApp
+import dev.piotrp.melodyshare.activities.MelodyChangeActivity
 import dev.piotrp.melodyshare.adapters.MelodyAdapter
 import dev.piotrp.melodyshare.adapters.MelodyListener
 import dev.piotrp.melodyshare.databinding.FragmentFeedBinding
@@ -105,14 +106,14 @@ class FeedFragment : Fragment(), MelodyListener {
         }
 
     override fun onMelodyClick(melody: MelodyModel) {
-        val launcherIntent = Intent(app, MainActivity::class.java)
+        val launcherIntent = Intent(app, MelodyChangeActivity::class.java)
         launcherIntent.putExtra("melody_edit", melody)
         getResult.launch(launcherIntent)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onAddMelodyClicked(view: View) {
-        val launcherIntent = Intent(app, MainActivity::class.java)
+        val launcherIntent = Intent(app, MelodyChangeActivity::class.java)
         getResult.launch(launcherIntent)
     }
 

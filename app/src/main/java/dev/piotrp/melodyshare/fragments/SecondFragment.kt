@@ -1,4 +1,4 @@
-package dev.piotrp.melodyshare.activities
+package dev.piotrp.melodyshare.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater

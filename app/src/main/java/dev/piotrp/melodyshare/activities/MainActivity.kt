@@ -1,194 +1,171 @@
 package dev.piotrp.melodyshare.activities
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.github.ajalt.timberkt.d
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
+import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
-import dev.piotrp.melodyshare.MyApp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.OAuthProvider
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dev.piotrp.melodyshare.R
-import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
-import dev.piotrp.melodyshare.adapters.MelodyNoteListener
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
-import dev.piotrp.melodyshare.models.MelodyModel
-import dev.piotrp.melodyshare.models.MelodyNote
 
-// TODO: Change to better name
-class MainActivity : AppCompatActivity(), MelodyNoteListener {
+class MainActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private var buttonPressedCount: Int = 0
-    private var melody = MelodyModel()
-    private lateinit var app: MyApp
+    private lateinit var auth: FirebaseAuth
 
-    // This is a test comment
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         binding = ActivityMainBinding.inflate(layoutInflater)
-        setSupportActionBar(binding.topAppBar)
-        binding.topAppBar.title = getString(R.string.button_message)
         setContentView(binding.root)
 
-        val layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList(), this)
+        binding.toolbar.title = title
 
-        app = application as MyApp
-        i { "MainActivity started." }
+        setSupportActionBar(binding.toolbar)
 
-        if (intent.hasExtra("melody_edit")) {
-            @Suppress("DEPRECATION")
-            melody = intent.extras?.getParcelable("melody_edit")!!
-            binding.titleTextField.editText?.setText(melody.title)
-            binding.descriptionTextField.editText?.setText(melody.description)
-            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+        auth = Firebase.auth
 
-            binding.button.text = getString(R.string.save_melody)
+        val navController = findNavController(R.id.nav_host_fragment_content_actual_main)
+
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.feed -> {
+                    // Respond to navigation item 1 click
+                    i { "Feed clicked" }
+                    navController.navigate(R.id.FeedFragment)
+                    true
+                }
+                R.id.likes -> {
+                    // Respond to navigation item 2 click
+                    // TODO: Implement
+                    i { "Likes clicked" }
+                    navController.navigate(R.id.SecondFragment)
+                    true
+                }
+                R.id.friends -> {
+                    // Respond to navigation item 3 click
+                    i { "Friends clicked" }
+                    // TODO: Implement
+                    true
+                }
+                R.id.settings -> {
+                    // Respond to navigation item 4 click
+                    i { "Settings clicked" }
+                    // TODO: Implement
+                    true
+                }
+                else -> false
+            }
+        }
+    }
+
+    private fun setUserIconToAvatar(menuItem: MenuItem) {
+        val currentUser = auth.currentUser
+
+        if (currentUser != null) {
+            // https://stackoverflow.com/a/33042690/19020549
+            // https://stackoverflow.com/a/39249024/19020549
+            // https://stackoverflow.com/a/57347465/19020549
+            // Is it possible to use bindings here?
+            // TODO: Handle offline caching/usage
+            Glide.with(this)
+                .asDrawable()
+                .circleCrop()
+                .load(currentUser.photoUrl)
+                .into(
+                    object : CustomTarget<Drawable?>() {
+                        override fun onResourceReady(
+                            resource: Drawable,
+                            transition: Transition<in Drawable?>?,
+                        ) {
+                            i { "Setting account icon to user's photo" }
+                            menuItem.setIcon(resource)
+                        }
+
+                        override fun onLoadCleared(placeholder: Drawable?) {}
+                    },
+                )
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_real_main, menu)
+        menuInflater.inflate(R.menu.menu_main, menu)
+
+        // Check if user is signed in (non-null) and update UI accordingly.
+        val currentUser = auth.currentUser
+        if (currentUser != null) {
+            i { "User already signed in: $currentUser" }
+
+            setUserIconToAvatar(menu.findItem(R.id.sign_in))
+        }
+
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.item_cancel -> {
-                setResult(RESULT_CANCELED)
-                finish()
+            R.id.sign_in -> {
+                val currentUser = auth.currentUser
+                if (currentUser == null) {
+                    val provider = OAuthProvider.newBuilder("github.com")
+
+                    val pendingResultTask = auth.pendingAuthResult
+                    if (pendingResultTask != null) {
+                        // There's something already here! Finish the sign-in for your user.
+                        pendingResultTask
+                            .addOnSuccessListener {
+                                i { "User sign-in success: ${it.user}" }
+                                setUserIconToAvatar(item)
+                            }
+                            .addOnFailureListener {
+                                i { "User sign-in failure" }
+                                e { it.toString() }
+                                Snackbar
+                                    .make(binding.root, R.string.sign_in_fail, Snackbar.LENGTH_LONG)
+                                    .show()
+                            }
+                    } else {
+                        auth
+                            .startActivityForSignInWithProvider(this, provider.build())
+                            .addOnSuccessListener {
+                                i { "User sign-in success: ${it.user}" }
+                                setUserIconToAvatar(item)
+                            }
+                            .addOnFailureListener {
+                                i { "User sign-in failure" }
+                                e { it.toString() }
+                                Snackbar
+                                    .make(binding.root, R.string.sign_in_fail, Snackbar.LENGTH_LONG)
+                                    .show()
+                            }
+                    }
+                } else {
+                    i { "Signing out user" }
+                    auth.signOut()
+                    item.setIcon(R.drawable.account_circle)
+                }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    fun onAddMelodyClicked(view: View) {
-        buttonPressedCount++
-
-        melody.title = binding.titleTextField.editText?.text.toString()
-        melody.description = binding.descriptionTextField.editText?.text.toString()
-
-        val messageId: Int
-
-        if (intent.hasExtra("melody_edit")) {
-            messageId =
-                if (melody.title.isBlank() || melody.title == "null") {
-                    R.string.button_clicked_message_saved_titleless
-                } else {
-                    R.string.button_clicked_message_saved
-                }
-
-            app.melodies.update(melody.copy())
-        } else {
-            messageId =
-                if (melody.title.isBlank() || melody.title == "null") {
-                    R.string.button_clicked_message_titleless
-                } else {
-                    R.string.button_clicked_message
-                }
-
-            app.melodies.create(melody.copy())
-        }
-
-        val message = getString(messageId, melody.title)
-
-        Snackbar
-            .make(binding.root, message, Snackbar.LENGTH_LONG)
-            .show()
-
-        i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
-        d { "Full melody ArrayList: ${app.melodies}" }
-
-        setResult(RESULT_OK)
-        finish()
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun onAddNoteClicked(view: View) {
-        i { "Adding MelodyNote to Melody" }
-        val id = melody.notes.maxOfOrNull { it.id }?.plus(1) ?: 0
-        val tick = melody.notes.maxOfOrNull { it.tick }?.plus(480) ?: 0
-
-        melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
-
-        // FIXME
-        // notifyItemRangeChanged causes graphical issues, probably cause
-        // recycling is disabled.
-//        (binding.recyclerView.adapter)?.
-//        notifyItemRangeChanged(0, melody.notes.size)
-        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
-
-        // Setting a new adapter sends us back to the top, this is nice
-        // to have regardless though
-        binding.recyclerView.scrollToPosition(melody.notes.size - 1)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun onRemoveNoteClicked(view: View) {
-        i { "Removing MelodyNote from Melody" }
-        val lastNote = melody.notes.lastOrNull()
-
-        if (lastNote == null) {
-            i { "No MelodyNote to remove" }
-            return
-        }
-
-        melody.notes.remove(lastNote)
-
-        // FIXME
-        // notifyItemRangeChanged causes graphical issues, probably cause
-        // recycling is disabled.
-//        (binding.recyclerView.adapter)?.
-//        notifyItemRangeChanged(0, melody.notes.size)
-        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
-
-        val notesSize = melody.notes.size
-
-        if (notesSize > 0) {
-            // Setting a new adapter sends us back to the top, this is nice
-            // to have regardless though
-            binding.recyclerView.scrollToPosition(melody.notes.size - 1)
-        }
-    }
-
-    override fun onMelodyNotePitchTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ) {
-        // TODO: Handle logic and conversion
-        i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: $editable" }
-        melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
-    }
-
-    override fun onMelodyNoteVelocityTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ) {
-        // TODO: Handle logic and conversion
-        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: $editable" }
-        melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
-    }
-
-    override fun onMelodyNoteTickTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ) {
-        // TODO: Handle logic and conversion
-        i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: $editable" }
-        melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
-    }
-
-    override fun onMelodyNoteDurationTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ) {
-        // TODO: Handle logic and conversion
-        i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: $editable" }
-        melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_actual_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }

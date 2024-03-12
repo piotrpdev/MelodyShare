@@ -9,12 +9,12 @@
 
     <fragment
         android:id="@+id/FeedFragment"
-        android:name="dev.piotrp.melodyshare.activities.FeedFragment"
+        android:name="dev.piotrp.melodyshare.fragments.FeedFragment"
         tools:layout="@layout/fragment_feed">
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="dev.piotrp.melodyshare.activities.SecondFragment"
+        android:name="dev.piotrp.melodyshare.fragments.SecondFragment"
         tools:layout="@layout/fragment_second">
     </fragment>
 </navigation>

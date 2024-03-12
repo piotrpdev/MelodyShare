@@ -5,7 +5,7 @@
     android:id="@+id/feed_fragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".activities.FeedFragment">
+    tools:context=".fragments.FeedFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
