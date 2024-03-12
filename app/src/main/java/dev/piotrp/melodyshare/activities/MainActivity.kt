@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
@@ -39,7 +40,8 @@ class MainActivity : AppCompatActivity() {
 
         auth = Firebase.auth
 
-        val navController = findNavController(R.id.nav_host_fragment_content_actual_main)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_actual_main) as NavHostFragment
+        val navController = navHostFragment.navController
 
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when(item.itemId) {
