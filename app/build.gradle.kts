@@ -4,6 +4,7 @@ plugins {
     id("kotlin-parcelize")
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp")
+    id("org.jlleitschuh.gradle.ktlint")
 }
 
 android {
@@ -57,4 +58,9 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
     implementation("com.github.LeffelMania:android-midi-lib:f8f2a6645")
+}
+
+ktlint {
+    android.set(true)
+    outputColorName.set("RED")
 }
