@@ -18,6 +18,7 @@ class MyApp  : Application() {
 
         i { "Adding example melody to store" }
 
+        // TODO: load example MIDI from asset?
         val risingNotes: ArrayList<MelodyNote> = ArrayList()
 
         for (i in 0..20) {

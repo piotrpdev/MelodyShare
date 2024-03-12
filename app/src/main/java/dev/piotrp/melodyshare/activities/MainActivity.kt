@@ -115,25 +115,29 @@ class MainActivity : AppCompatActivity(), MelodyNoteListener {
 
         // Setting a new adapter sends us back to the top, this is nice
         // to have regardless though
-        binding.recyclerView.scrollToPosition(melody.notes.size - 1);
+        binding.recyclerView.scrollToPosition(melody.notes.size - 1)
     }
 
     override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
         i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
         melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
     }
 
     override fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
         i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
         melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
     }
 
     override fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
         i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: ${editable.toString()}" }
         melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
     }
 
     override fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
         i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: ${editable.toString()}" }
         melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
     }

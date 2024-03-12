@@ -5,10 +5,8 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import com.github.ajalt.timberkt.i
 import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
 import dev.piotrp.melodyshare.models.MelodyNote
-import timber.log.Timber.i
 
 interface MelodyNoteListener {
     fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?)
@@ -27,6 +25,7 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
     }
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
+        // FIXME: Listeners fire with correct ID but wrong Editable values
         // https://stackoverflow.com/a/47787151/19020549
         holder.setIsRecyclable(false)
         val melody = melodyNotes[holder.adapterPosition]

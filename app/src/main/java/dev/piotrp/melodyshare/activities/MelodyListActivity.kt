@@ -57,6 +57,8 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         if (risingMelody != null) {
             val midiFile = File(this.filesDir.absolutePath + "${risingMelody.id}.mid")
 
+            // TODO: Move to separate thread or coroutine since IO is slow
+            // and we don't want to block UI thread
             risingMelody.writeMidiToFile(midiFile)
             playMidi(midiFile)
         } else {
@@ -88,6 +90,7 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
             // https://stackoverflow.com/a/39249024/19020549
             // https://stackoverflow.com/a/57347465/19020549
             // Is it possible to use bindings here?
+            // TODO: Handle offline caching/usage
             Glide.with(this)
                 .asDrawable()
                 .circleCrop()
