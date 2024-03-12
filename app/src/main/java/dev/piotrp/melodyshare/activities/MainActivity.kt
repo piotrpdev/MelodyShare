@@ -99,18 +99,22 @@ class MainActivity : AppCompatActivity(), MelodyNoteListener {
     }
 
     override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
-        i { "Pitch text changed for MelodyNote. Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
+        i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
+        melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
     }
 
     override fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?) {
-        i { "Velocity text changed for MelodyNote. Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
+        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
+        melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
     }
 
     override fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?) {
-        i { "Tick text changed for MelodyNote. Old: ${melodyNote.tick}, New: ${editable.toString()}" }
+        i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: ${editable.toString()}" }
+        melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
     }
 
     override fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?) {
-        i { "Duration text changed for MelodyNote. Old: ${melodyNote.duration}, New: ${editable.toString()}" }
+        i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: ${editable.toString()}" }
+        melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
     }
 }
