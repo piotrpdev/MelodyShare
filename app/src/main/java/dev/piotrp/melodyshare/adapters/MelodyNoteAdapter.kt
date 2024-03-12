@@ -9,22 +9,43 @@ import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
 import dev.piotrp.melodyshare.models.MelodyNote
 
 interface MelodyNoteListener {
-    fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?)
-    fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?)
-    fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?)
-    fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?)
+    fun onMelodyNotePitchTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    )
 
+    fun onMelodyNoteVelocityTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    )
+
+    fun onMelodyNoteTickTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    )
+
+    fun onMelodyNoteDurationTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    )
 }
 
 class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private val listener: MelodyNoteListener) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
-        val binding = CardMelodyNoteBinding
-            .inflate(LayoutInflater.from(parent.context), parent, false)
+    override fun onCreateViewHolder(
+        parent: ViewGroup,
+        viewType: Int,
+    ): MainHolder {
+        val binding =
+            CardMelodyNoteBinding
+                .inflate(LayoutInflater.from(parent.context), parent, false)
 
         return MainHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: MainHolder, position: Int) {
+    override fun onBindViewHolder(
+        holder: MainHolder,
+        position: Int,
+    ) {
         // FIXME: Listeners fire with correct ID but wrong Editable values
         // https://stackoverflow.com/a/47787151/19020549
         holder.setIsRecyclable(false)
@@ -34,10 +55,12 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
 
     override fun getItemCount(): Int = melodyNotes.size
 
-    class MainHolder(private val binding : CardMelodyNoteBinding) :
+    class MainHolder(private val binding: CardMelodyNoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(melody: MelodyNote, listener: MelodyNoteListener) {
+        fun bind(
+            melody: MelodyNote,
+            listener: MelodyNoteListener,
+        ) {
             binding.pitchTextField.editText?.setText(melody.pitch.toString())
             binding.velocityTextField.editText?.setText(melody.velocity.toString())
             binding.tickTextField.editText?.setText(melody.tick.toString())

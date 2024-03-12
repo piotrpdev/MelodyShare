@@ -76,11 +76,21 @@ class MainActivity : AppCompatActivity(), MelodyNoteListener {
         val messageId: Int
 
         if (intent.hasExtra("melody_edit")) {
-            messageId = if (melody.title.isBlank() || melody.title == "null") R.string.button_clicked_message_saved_titleless else R.string.button_clicked_message_saved
+            messageId =
+                if (melody.title.isBlank() || melody.title == "null") {
+                    R.string.button_clicked_message_saved_titleless
+                } else {
+                    R.string.button_clicked_message_saved
+                }
 
             app.melodies.update(melody.copy())
         } else {
-            messageId = if (melody.title.isBlank() || melody.title == "null") R.string.button_clicked_message_titleless else R.string.button_clicked_message
+            messageId =
+                if (melody.title.isBlank() || melody.title == "null") {
+                    R.string.button_clicked_message_titleless
+                } else {
+                    R.string.button_clicked_message
+                }
 
             app.melodies.create(melody.copy())
         }
@@ -118,27 +128,39 @@ class MainActivity : AppCompatActivity(), MelodyNoteListener {
         binding.recyclerView.scrollToPosition(melody.notes.size - 1)
     }
 
-    override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+    override fun onMelodyNotePitchTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    ) {
         // TODO: Handle logic and conversion
-        i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
+        i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: $editable" }
         melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
     }
 
-    override fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+    override fun onMelodyNoteVelocityTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    ) {
         // TODO: Handle logic and conversion
-        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
+        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: $editable" }
         melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
     }
 
-    override fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+    override fun onMelodyNoteTickTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    ) {
         // TODO: Handle logic and conversion
-        i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: ${editable.toString()}" }
+        i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: $editable" }
         melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
     }
 
-    override fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+    override fun onMelodyNoteDurationTextChanged(
+        melodyNote: MelodyNote,
+        editable: Editable?,
+    ) {
         // TODO: Handle logic and conversion
-        i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: ${editable.toString()}" }
+        i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: $editable" }
         melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
     }
 }
