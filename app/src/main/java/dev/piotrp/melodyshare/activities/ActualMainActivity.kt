@@ -1,17 +1,13 @@
 package dev.piotrp.melodyshare.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.media.AudioAttributes
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
@@ -22,66 +18,60 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
-import dev.piotrp.melodyshare.adapters.MelodyAdapter
-import dev.piotrp.melodyshare.adapters.MelodyListener
-import dev.piotrp.melodyshare.databinding.ActivityMelodyListBinding
-import dev.piotrp.melodyshare.models.MelodyModel
-import dev.piotrp.melodyshare.models.writeMidiToFile
-import java.io.File
-import java.io.FileInputStream
+import dev.piotrp.melodyshare.databinding.ActivityActualMainBinding
 
-class MelodyListActivity : AppCompatActivity(), MelodyListener {
-    private lateinit var app: MyApp
-    private lateinit var binding: ActivityMelodyListBinding
+class ActualMainActivity : AppCompatActivity() {
+
+    private lateinit var appBarConfiguration: AppBarConfiguration
+    private lateinit var binding: ActivityActualMainBinding
     private lateinit var auth: FirebaseAuth
-    private val mediaPlayer = MediaPlayer()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMelodyListBinding.inflate(layoutInflater)
-        binding.topAppBar.title = title
-        setSupportActionBar(binding.topAppBar)
-        setContentView(binding.root)
-        app = application as MyApp
 
-        val layoutManager = LinearLayoutManager(this)
-        binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = MelodyAdapter(app.melodies.findAll(), this)
+        binding = ActivityActualMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        binding.toolbar.title = title
+
+        setSupportActionBar(binding.toolbar)
 
         auth = Firebase.auth
 
-        val risingMelody = app.melodies.findAll().find { it.title == "Rising Melody" }
+        val navController = findNavController(R.id.nav_host_fragment_content_actual_main)
 
-        if (risingMelody != null) {
-            val midiFile = File(this.filesDir.absolutePath + "${risingMelody.id}.mid")
-
-            // TODO: Move to separate thread or coroutine since IO is slow
-            // and we don't want to block UI thread
-            risingMelody.writeMidiToFile(midiFile)
-            playMidi(midiFile)
-        } else {
-            e { "'Rising Melody' not found" }
-        }
-    }
-
-    private fun playMidi(file: File) =
-        run {
-            FileInputStream(file).use {
-                mediaPlayer.apply {
-                    setAudioAttributes(
-                        AudioAttributes.Builder()
-                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
-                            .setUsage(AudioAttributes.USAGE_MEDIA)
-                            .build(),
-                    )
-                    setDataSource(it.fd)
-                    prepareAsync()
-                    setOnPreparedListener { start() }
+        binding.bottomNavigation.setOnItemSelectedListener { item ->
+            when(item.itemId) {
+                R.id.feed -> {
+                    // Respond to navigation item 1 click
+                    i { "Feed clicked" }
+                    navController.navigate(R.id.FeedFragment)
+                    true
                 }
+                R.id.likes -> {
+                    // Respond to navigation item 2 click
+                    // TODO: Implement
+                    i { "Likes clicked" }
+                    navController.navigate(R.id.SecondFragment)
+                    true
+                }
+                R.id.friends -> {
+                    // Respond to navigation item 3 click
+                    i { "Friends clicked" }
+                    // TODO: Implement
+                    true
+                }
+                R.id.settings -> {
+                    // Respond to navigation item 4 click
+                    i { "Settings clicked" }
+                    // TODO: Implement
+                    true
+                }
+                else -> false
             }
         }
+    }
 
     private fun setUserIconToAvatar(menuItem: MenuItem) {
         val currentUser = auth.currentUser
@@ -173,42 +163,9 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private val getResult =
-        registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult(),
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                (binding.recyclerView.adapter)
-                    ?.notifyItemRangeChanged(0, app.melodies.findAll().size)
-            }
-        }
-
-    override fun onMelodyClick(melody: MelodyModel) {
-        val launcherIntent = Intent(this, MainActivity::class.java)
-        launcherIntent.putExtra("melody_edit", melody)
-        getResult.launch(launcherIntent)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun onAddMelodyClicked(view: View) {
-        val launcherIntent = Intent(this, MainActivity::class.java)
-        getResult.launch(launcherIntent)
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    fun onRemoveMelodyClicked(view: View) {
-        // TODO: Should remove based on ID or something predictable
-        val lastMelody = app.melodies.findAll().lastOrNull()
-
-        if (lastMelody == null) {
-            i { "No melodies to remove" }
-            return
-        }
-
-        i { "Removing melody (ID: ${lastMelody.id}, Title: ${lastMelody.title})" }
-
-        app.melodies.remove(lastMelody)
-        (binding.recyclerView.adapter)
-            ?.notifyItemRemoved(app.melodies.findAll().size + 1)
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment_content_actual_main)
+        return navController.navigateUp(appBarConfiguration)
+                || super.onSupportNavigateUp()
     }
 }
