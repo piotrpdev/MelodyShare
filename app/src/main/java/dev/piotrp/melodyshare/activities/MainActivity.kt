@@ -98,6 +98,26 @@ class MainActivity : AppCompatActivity(), MelodyNoteListener {
         finish()
     }
 
+    @Suppress("UNUSED_PARAMETER")
+    fun onAddNoteClicked(view: View) {
+        i { "Adding MelodyNote to Melody" }
+        val id = melody.notes.maxOfOrNull { it.id }?.plus(1) ?: 0
+        val tick = melody.notes.maxOfOrNull { it.tick }?.plus(480) ?: 0
+
+        melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
+
+        // FIXME
+        // notifyItemRangeChanged causes graphical issues, probably cause
+        // recycling is disabled.
+//        (binding.recyclerView.adapter)?.
+//        notifyItemRangeChanged(0, melody.notes.size)
+        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+
+        // Setting a new adapter sends us back to the top, this is nice
+        // to have regardless though
+        binding.recyclerView.scrollToPosition(melody.notes.size - 1);
+    }
+
     override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
         i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
         melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
