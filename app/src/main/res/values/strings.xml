@@ -17,4 +17,8 @@
     <string name="add_note">Add Note</string>
     <string name="remove_note">Remove Note</string>
     <string name="remove_melody">Remove Melody</string>
+    <string name="feed">Feed</string>
+    <string name="settings">Settings</string>
+    <string name="likes">Likes</string>
+    <string name="friends">Friends</string>
 </resources>
