@@ -6,6 +6,7 @@ plugins {
     id("com.google.devtools.ksp")
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.dokka")
+    id("jacoco")
 }
 
 android {
@@ -45,7 +46,6 @@ android {
 }
 
 dependencies {
-
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     dokkaPlugin("org.jetbrains.dokka:android-documentation-plugin:1.9.20")
