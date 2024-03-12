@@ -1,20 +1,25 @@
 package dev.piotrp.melodyshare.activities
 
 import android.os.Bundle
+import android.text.Editable
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
+import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
+import dev.piotrp.melodyshare.adapters.MelodyNoteListener
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
 import dev.piotrp.melodyshare.models.MelodyModel
+import dev.piotrp.melodyshare.models.MelodyNote
 
 // TODO: Change to better name
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), MelodyNoteListener {
     private lateinit var binding: ActivityMainBinding
     private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
@@ -28,6 +33,10 @@ class MainActivity : AppCompatActivity() {
         binding.topAppBar.title = getString(R.string.button_message)
         setContentView(binding.root)
 
+        val layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList(), this)
+
         app = application as MyApp
         i { "MainActivity started." }
 
@@ -36,6 +45,8 @@ class MainActivity : AppCompatActivity() {
             melody = intent.extras?.getParcelable("melody_edit")!!
             binding.titleTextField.editText?.setText(melody.title)
             binding.descriptionTextField.editText?.setText(melody.description)
+            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+
             binding.button.text = getString(R.string.save_melody)
         }
     }
@@ -85,5 +96,49 @@ class MainActivity : AppCompatActivity() {
 
         setResult(RESULT_OK)
         finish()
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    fun onAddNoteClicked(view: View) {
+        i { "Adding MelodyNote to Melody" }
+        val id = melody.notes.maxOfOrNull { it.id }?.plus(1) ?: 0
+        val tick = melody.notes.maxOfOrNull { it.tick }?.plus(480) ?: 0
+
+        melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
+
+        // FIXME
+        // notifyItemRangeChanged causes graphical issues, probably cause
+        // recycling is disabled.
+//        (binding.recyclerView.adapter)?.
+//        notifyItemRangeChanged(0, melody.notes.size)
+        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+
+        // Setting a new adapter sends us back to the top, this is nice
+        // to have regardless though
+        binding.recyclerView.scrollToPosition(melody.notes.size - 1)
+    }
+
+    override fun onMelodyNotePitchTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
+        i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: ${editable.toString()}" }
+        melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
+    }
+
+    override fun onMelodyNoteVelocityTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
+        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: ${editable.toString()}" }
+        melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
+    }
+
+    override fun onMelodyNoteTickTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
+        i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: ${editable.toString()}" }
+        melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
+    }
+
+    override fun onMelodyNoteDurationTextChanged(melodyNote: MelodyNote, editable: Editable?) {
+        // TODO: Handle logic and conversion
+        i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: ${editable.toString()}" }
+        melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
     }
 }

@@ -22,19 +22,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import com.leff.midi.MidiFile
-import com.leff.midi.MidiTrack
-import com.leff.midi.event.meta.Tempo
-import com.leff.midi.event.meta.TimeSignature
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.MelodyAdapter
 import dev.piotrp.melodyshare.adapters.MelodyListener
 import dev.piotrp.melodyshare.databinding.ActivityMelodyListBinding
 import dev.piotrp.melodyshare.models.MelodyModel
+import dev.piotrp.melodyshare.models.writeMidiToFile
 import java.io.File
 import java.io.FileInputStream
-import java.io.IOException
 
 
 class MelodyListActivity : AppCompatActivity(), MelodyListener {
@@ -56,57 +52,22 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
 
         auth = Firebase.auth
 
-        createMidiFile(this.filesDir.absolutePath + "examplemidi.mid")
-        playMidi(this.filesDir.absolutePath + "examplemidi.mid")
-    }
+        val risingMelody = app.melodies.findAll().find { it.title == "Rising Melody" }
 
-    // MIT License, Copyright (c) 2017 Alex Leffelman
-    // https://github.com/LeffelMania/android-midi-lib/blob/7cdd855c2b70d2074a53732e8a3979fe8e65e12a/README.md?plain=1#L67-L115
-    private fun createMidiFile(absoluteMidiPath: String) {
-        i { "Creating new MIDI tracks" }
-        val tempoTrack = MidiTrack()
-        val noteTrack = MidiTrack()
+        if (risingMelody != null) {
+            val midiFile = File(this.filesDir.absolutePath + "${risingMelody.id}.mid")
 
-        val ts = TimeSignature()
-        ts.setTimeSignature(4, 4, TimeSignature.DEFAULT_METER, TimeSignature.DEFAULT_DIVISION)
-
-        val tempo = Tempo()
-        tempo.bpm = 228f
-
-        tempoTrack.insertEvent(ts)
-        tempoTrack.insertEvent(tempo)
-
-        val noteCount = 80
-
-        for (i in 0 until noteCount) {
-            val channel = 0
-            val pitch = 1 + i
-            val velocity = 100
-            val tick = (i * 480).toLong()
-            val duration: Long = 120
-            noteTrack.insertNote(channel, pitch, velocity, tick, duration)
-        }
-
-        val tracks: MutableList<MidiTrack> = ArrayList()
-        tracks.add(tempoTrack)
-        tracks.add(noteTrack)
-
-        val midi = MidiFile(MidiFile.DEFAULT_RESOLUTION, tracks)
-
-        i { "Creating 'File' instance for MIDI at: $absoluteMidiPath" }
-
-        val output = File(absoluteMidiPath)
-
-        try {
-            i { "Attempting to write MIDI to file" }
-            midi.writeToFile(output)
-        } catch (e: IOException) {
-            System.err.println(e)
+            // TODO: Move to separate thread or coroutine since IO is slow
+            // and we don't want to block UI thread
+            risingMelody.writeMidiToFile(midiFile)
+            playMidi(midiFile)
+        } else {
+            e { "'Rising Melody' not found" }
         }
     }
 
-    private fun playMidi(absoluteMidiPath: String) = run {
-        FileInputStream(absoluteMidiPath).use {
+    private fun playMidi(file: File) = run {
+        FileInputStream(file).use {
             mediaPlayer.apply {
                 setAudioAttributes(
                     AudioAttributes.Builder()
@@ -129,6 +90,7 @@ class MelodyListActivity : AppCompatActivity(), MelodyListener {
             // https://stackoverflow.com/a/39249024/19020549
             // https://stackoverflow.com/a/57347465/19020549
             // Is it possible to use bindings here?
+            // TODO: Handle offline caching/usage
             Glide.with(this)
                 .asDrawable()
                 .circleCrop()
