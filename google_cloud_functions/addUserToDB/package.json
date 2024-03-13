@@ -1,0 +1,7 @@
+{
+  "name": "add-new-user-to-db",
+  "version": "0.0.1",
+  "dependencies": {
+    "@google-cloud/firestore": "^7.0.0"
+  }
+}
