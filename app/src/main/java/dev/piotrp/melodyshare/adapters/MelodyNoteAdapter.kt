@@ -1,12 +1,10 @@
 package dev.piotrp.melodyshare.adapters
 
-import android.provider.Settings.Global.getString
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
-import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
 import dev.piotrp.melodyshare.models.MelodyNote
 
