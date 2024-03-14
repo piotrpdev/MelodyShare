@@ -23,7 +23,6 @@ import dev.piotrp.melodyshare.models.writeMidiToFile
 import java.io.File
 import java.io.FileInputStream
 
-
 class FeedFragment : Fragment(), MelodyListener {
     private lateinit var app: MyApp
     private val mediaPlayer = MediaPlayer()
@@ -39,15 +38,19 @@ class FeedFragment : Fragment(), MelodyListener {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentFeedBinding.inflate(inflater, container, false)
 
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onViewCreated(
+        view: View,
+        savedInstanceState: Bundle?,
+    ) {
         super.onViewCreated(view, savedInstanceState)
 
         app = activity?.applicationContext as MyApp

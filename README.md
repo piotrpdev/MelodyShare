@@ -14,11 +14,20 @@ This app uses [Firebase](https://firebase.google.com/) so you need to set-up a p
 
 ### Google Cloud Functions
 
-This project contains some Google Cloud Functions you need to setup in `./google_cloud_functions/`:
+This project contains some Google Cloud Functions you need to setup in `google_cloud_functions/`:
 
 - `addUserToDB`
     - Environment: 1st gen
     - Trigger: Firebase Authentication - create
+
+## Contributing
+
+- **Linting:** run the `ktlintFormat` Gradle task.
+- **Documentation:** run the `dokkaHtml` Gradle task.
+  - Dokka output will be generated to: `app/build/dokka/html/` 
+- **Testing:** run the `test` Gradle task.
+- **Test Coverage:** run the `connectedCheck` Gradle task.
+  - Jacoco report will be generated to: `app/build/reports/androidTests/connected/debug/`
 
 ## License
 
