@@ -52,7 +52,7 @@ class FeedFragment : Fragment(), MelodyListener {
 
         app = activity?.applicationContext as MyApp
 
-        val layoutManager = LinearLayoutManager(app)
+        val layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerView.layoutManager = layoutManager
         binding.recyclerView.adapter = MelodyAdapter(app.melodies.findAll(), this)
 
@@ -62,7 +62,7 @@ class FeedFragment : Fragment(), MelodyListener {
         val risingMelody = app.melodies.findAll().find { it.title == "Rising Melody" }
 
         if (risingMelody != null) {
-            val midiFile = File(app.filesDir.absolutePath + "${risingMelody.id}.mid")
+            val midiFile = File(requireActivity().filesDir.absolutePath + "${risingMelody.id}.mid")
 
             // TODO: Move to separate thread or coroutine since IO is slow
             // and we don't want to block UI thread
@@ -106,14 +106,14 @@ class FeedFragment : Fragment(), MelodyListener {
         }
 
     override fun onMelodyClick(melody: MelodyModel) {
-        val launcherIntent = Intent(app, MelodyChangeActivity::class.java)
+        val launcherIntent = Intent(requireActivity(), MelodyChangeActivity::class.java)
         launcherIntent.putExtra("melody_edit", melody)
         getResult.launch(launcherIntent)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onAddMelodyClicked(view: View) {
-        val launcherIntent = Intent(app, MelodyChangeActivity::class.java)
+        val launcherIntent = Intent(requireActivity(), MelodyChangeActivity::class.java)
         getResult.launch(launcherIntent)
     }
 
