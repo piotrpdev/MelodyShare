@@ -159,36 +159,48 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     override fun onMelodyNotePitchTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    ) {
+    ): Boolean {
         // TODO: Handle logic and conversion
         i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: $editable" }
-        melodyNote.pitch = editable.toString().toIntOrNull() ?: melodyNote.pitch
+        val parsedValue = editable.toString().toIntOrNull()
+        melodyNote.pitch = parsedValue ?: melodyNote.pitch
+
+        return parsedValue != null
     }
 
     override fun onMelodyNoteVelocityTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    ) {
+    ): Boolean {
         // TODO: Handle logic and conversion
         i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: $editable" }
-        melodyNote.velocity = editable.toString().toIntOrNull() ?: melodyNote.velocity
+        val parsedValue = editable.toString().toIntOrNull()
+        melodyNote.velocity = parsedValue ?: melodyNote.velocity
+
+        return parsedValue != null
     }
 
     override fun onMelodyNoteTickTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    ) {
+    ): Boolean {
         // TODO: Handle logic and conversion
         i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: $editable" }
-        melodyNote.tick = editable.toString().toLongOrNull() ?: melodyNote.tick
+        val parsedValue = editable.toString().toLongOrNull()
+        melodyNote.tick = parsedValue ?: melodyNote.tick
+
+        return parsedValue != null
     }
 
     override fun onMelodyNoteDurationTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    ) {
+    ): Boolean {
         // TODO: Handle logic and conversion
         i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: $editable" }
-        melodyNote.duration = editable.toString().toLongOrNull() ?: melodyNote.duration
+        val parsedValue = editable.toString().toLongOrNull()
+        melodyNote.duration = parsedValue ?: melodyNote.duration
+
+        return parsedValue != null
     }
 }

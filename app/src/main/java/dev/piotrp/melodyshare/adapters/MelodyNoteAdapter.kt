@@ -12,22 +12,22 @@ interface MelodyNoteListener {
     fun onMelodyNotePitchTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    )
+    ): Boolean
 
     fun onMelodyNoteVelocityTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    )
+    ): Boolean
 
     fun onMelodyNoteTickTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    )
+    ): Boolean
 
     fun onMelodyNoteDurationTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
-    )
+    ): Boolean
 }
 
 class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private val listener: MelodyNoteListener) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
@@ -66,10 +66,22 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
             binding.tickTextField.editText?.setText(melody.tick.toString())
             binding.durationTextField.editText?.setText(melody.duration.toString())
 
-            binding.pitchTextField.editText?.doAfterTextChanged { listener.onMelodyNotePitchTextChanged(melody, it) }
-            binding.velocityTextField.editText?.doAfterTextChanged { listener.onMelodyNoteVelocityTextChanged(melody, it) }
-            binding.tickTextField.editText?.doAfterTextChanged { listener.onMelodyNoteTickTextChanged(melody, it) }
-            binding.durationTextField.editText?.doAfterTextChanged { listener.onMelodyNoteDurationTextChanged(melody, it) }
+            binding.pitchTextField.editText?.doAfterTextChanged {
+                val valid = listener.onMelodyNotePitchTextChanged(melody, it)
+                binding.pitchTextField.error = if (valid) null else "Numbers only"
+            }
+            binding.velocityTextField.editText?.doAfterTextChanged {
+                val valid = listener.onMelodyNoteVelocityTextChanged(melody, it)
+                binding.velocityTextField.error = if (valid) null else "Numbers only"
+            }
+            binding.tickTextField.editText?.doAfterTextChanged {
+                val valid = listener.onMelodyNoteTickTextChanged(melody, it)
+                binding.tickTextField.error = if (valid) null else "Numbers only"
+            }
+            binding.durationTextField.editText?.doAfterTextChanged {
+                val valid = listener.onMelodyNoteDurationTextChanged(melody, it)
+                binding.durationTextField.error = if (valid) null else "Numbers only"
+            }
         }
     }
 }
