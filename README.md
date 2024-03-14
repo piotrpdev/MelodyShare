@@ -1,5 +1,13 @@
 # MelodyShare
 
+<img align="right" alt="App logo" width="200px" src="app/src/main/ic_launcher-playstore.png" />
+
+An Android app for sharing melodies with friends!
+
+CA submission for SETU's Mobile Application Development module.
+
+## Assignment Date
+
 [![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/ZX5kW5CC)
 
 ## Setup
@@ -28,6 +36,14 @@ This project contains some Google Cloud Functions you need to setup in `google_c
 - **Testing:** run the `test` Gradle task.
 - **Test Coverage:** run the `connectedCheck` Gradle task.
   - Jacoco report will be generated to: `app/build/reports/androidTests/connected/debug/`
+
+## Wireframes
+
+Here are some of the original wireframes/sketches of the design for the app.
+
+|                         App                         |                                Sequencer                                |
+|:---------------------------------------------------:|:-----------------------------------------------------------------------:|
+| ![app_wireframe.png](.github/img/app_wireframe.png) | ![melody-sequencer-sketch.jpg](.github/img/melody-sequencer-sketch.jpg) |
 
 ## License
 
