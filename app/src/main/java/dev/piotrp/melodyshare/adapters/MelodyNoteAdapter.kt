@@ -1,10 +1,12 @@
 package dev.piotrp.melodyshare.adapters
 
+import android.provider.Settings.Global.getString
 import android.text.Editable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
+import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
 import dev.piotrp.melodyshare.models.MelodyNote
 
@@ -68,19 +70,27 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
 
             binding.pitchTextField.editText?.doAfterTextChanged {
                 val valid = listener.onMelodyNotePitchTextChanged(melody, it)
-                binding.pitchTextField.error = if (valid) null else "Numbers only"
+                // TODO: Better error message
+                binding.pitchTextField.error = if (valid) null else "0-9"
+                binding.pitchTextField.isErrorEnabled = !valid
             }
             binding.velocityTextField.editText?.doAfterTextChanged {
                 val valid = listener.onMelodyNoteVelocityTextChanged(melody, it)
-                binding.velocityTextField.error = if (valid) null else "Numbers only"
+                // TODO: Better error message
+                binding.velocityTextField.error = if (valid) null else "0-9"
+                binding.velocityTextField.isErrorEnabled = !valid
             }
             binding.tickTextField.editText?.doAfterTextChanged {
                 val valid = listener.onMelodyNoteTickTextChanged(melody, it)
-                binding.tickTextField.error = if (valid) null else "Numbers only"
+                // TODO: Better error message
+                binding.tickTextField.error = if (valid) null else "0-9"
+                binding.tickTextField.isErrorEnabled = !valid
             }
             binding.durationTextField.editText?.doAfterTextChanged {
                 val valid = listener.onMelodyNoteDurationTextChanged(melody, it)
-                binding.durationTextField.error = if (valid) null else "Numbers only"
+                // TODO: Better error message
+                binding.durationTextField.error = if (valid) null else "0-9"
+                binding.durationTextField.isErrorEnabled = !valid
             }
         }
     }
