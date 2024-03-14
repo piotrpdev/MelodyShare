@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
@@ -24,6 +25,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
     private lateinit var app: MyApp
+    private val alphaNumSpaceRegex = Regex("^[a-zA-Z\\d\\s]*\$")
 
     // This is a test comment
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -49,6 +51,28 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
 
             binding.button.text = getString(R.string.save_melody)
         }
+
+        binding.titleTextField.editText?.doAfterTextChanged {
+            val titleValid = isStringOnlyAlphaNumSpace(it.toString().trim())
+            if (titleValid) {
+                binding.titleTextField.error = null
+                binding.titleTextField.isErrorEnabled = false
+            } else {
+                binding.titleTextField.isErrorEnabled = true
+                binding.titleTextField.error = getString(R.string.alpha_num_space_error)
+            }
+        }
+
+        binding.descriptionTextField.editText?.doAfterTextChanged {
+            val descriptionValid = isStringOnlyAlphaNumSpace(it.toString().trim())
+            if (descriptionValid) {
+                binding.descriptionTextField.error = null
+                binding.descriptionTextField.isErrorEnabled = false
+            } else {
+                binding.descriptionTextField.isErrorEnabled = true
+                binding.descriptionTextField.error = getString(R.string.alpha_num_space_error)
+            }
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -66,31 +90,39 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun isStringOnlyAlphaNumSpace(string: String): Boolean =
+        string.isNotBlank() && string != "null" && alphaNumSpaceRegex.matchEntire(string) != null
+
     @Suppress("UNUSED_PARAMETER")
     fun onAddMelodyClicked(view: View) {
         buttonPressedCount++
 
-        melody.title = binding.titleTextField.editText?.text.toString()
-        melody.description = binding.descriptionTextField.editText?.text.toString()
+        val titleText = binding.titleTextField.editText?.text.toString().trim()
+        val descriptionText = binding.descriptionTextField.editText?.text.toString().trim()
+
+        val titleValid = isStringOnlyAlphaNumSpace(titleText)
+        val descriptionValid = isStringOnlyAlphaNumSpace(descriptionText)
+
+        if (!titleValid || !descriptionValid) {
+            i { "Not saving melody because title or description isn't valid" }
+            Snackbar
+                .make(binding.root, R.string.title_description_error, Snackbar.LENGTH_LONG)
+                .show()
+
+            return
+        }
+
+        melody.title = titleText
+        melody.description = descriptionText
 
         val messageId: Int
 
         if (intent.hasExtra("melody_edit")) {
-            messageId =
-                if (melody.title.isBlank() || melody.title == "null") {
-                    R.string.button_clicked_message_saved_titleless
-                } else {
-                    R.string.button_clicked_message_saved
-                }
+            messageId = R.string.button_clicked_message_saved
 
             app.melodies.update(melody.copy())
         } else {
-            messageId =
-                if (melody.title.isBlank() || melody.title == "null") {
-                    R.string.button_clicked_message_titleless
-                } else {
-                    R.string.button_clicked_message
-                }
+            messageId = R.string.button_clicked_message
 
             app.melodies.create(melody.copy())
         }
