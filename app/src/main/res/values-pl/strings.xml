@@ -25,4 +25,5 @@
     <string name="title_description_error">Tytuł i opis muszą być poprawne!</string>
     <string name="alpha_num_space_error">Tylko litery, cyfry i spacje</string>
     <string name="num_error">Tylko cyfry</string>
+    <string name="search_icon_description">lupa</string>
 </resources>
