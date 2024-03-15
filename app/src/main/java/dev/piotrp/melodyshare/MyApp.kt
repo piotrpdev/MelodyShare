@@ -62,6 +62,7 @@ class MyApp : Application() {
 
     companion object {
         val alphaNumSpaceRegex = Regex("^[a-zA-Z\\d\\s]*\$")
+
         fun isStringOnlyAlphaNumSpace(string: String): Boolean =
             string.isNotBlank() && string != "null" && alphaNumSpaceRegex.matchEntire(string) != null
     }
