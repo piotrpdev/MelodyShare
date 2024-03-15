@@ -12,6 +12,7 @@ import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
+import dev.piotrp.melodyshare.MyApp.Companion.isStringOnlyAlphaNumSpace
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
 import dev.piotrp.melodyshare.adapters.MelodyNoteListener
@@ -25,7 +26,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
     private lateinit var app: MyApp
-    private val alphaNumSpaceRegex = Regex("^[a-zA-Z\\d\\s]*\$")
 
     // This is a test comment
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -89,9 +89,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         }
         return super.onOptionsItemSelected(item)
     }
-
-    private fun isStringOnlyAlphaNumSpace(string: String): Boolean =
-        string.isNotBlank() && string != "null" && alphaNumSpaceRegex.matchEntire(string) != null
 
     @Suppress("UNUSED_PARAMETER")
     fun onAddMelodyClicked(view: View) {
