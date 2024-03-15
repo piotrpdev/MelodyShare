@@ -148,6 +148,8 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         // FIXME
         // notifyItemRangeChanged causes graphical issues, probably cause
         // recycling is disabled.
+        // also, replacing the whole adapter uses a lot of resources
+        // and is slow
 //        (binding.recyclerView.adapter)?.
 //        notifyItemRangeChanged(0, melody.notes.size)
         binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
@@ -172,6 +174,8 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         // FIXME
         // notifyItemRangeChanged causes graphical issues, probably cause
         // recycling is disabled.
+        // also, replacing the whole adapter uses a lot of resources
+        // and is slow
 //        (binding.recyclerView.adapter)?.
 //        notifyItemRangeChanged(0, melody.notes.size)
         binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
