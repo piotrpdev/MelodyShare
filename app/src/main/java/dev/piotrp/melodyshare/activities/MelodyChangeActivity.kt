@@ -12,6 +12,7 @@ import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
+import dev.piotrp.melodyshare.MyApp.Companion.isStringOnlyAlphaNumSpace
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.adapters.MelodyNoteAdapter
 import dev.piotrp.melodyshare.adapters.MelodyNoteListener
@@ -25,7 +26,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
     private lateinit var app: MyApp
-    private val alphaNumSpaceRegex = Regex("^[a-zA-Z\\d\\s]*\$")
 
     // This is a test comment
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,9 +90,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun isStringOnlyAlphaNumSpace(string: String): Boolean =
-        string.isNotBlank() && string != "null" && alphaNumSpaceRegex.matchEntire(string) != null
-
     @Suppress("UNUSED_PARAMETER")
     fun onAddMelodyClicked(view: View) {
         buttonPressedCount++
@@ -134,7 +131,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
             .show()
 
         i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
-        d { "Full melody ArrayList: ${app.melodies}" }
+        d { "Full melody ArrayList: ${app.melodies.findAll()}" }
 
         setResult(RESULT_OK)
         finish()
@@ -151,6 +148,8 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         // FIXME
         // notifyItemRangeChanged causes graphical issues, probably cause
         // recycling is disabled.
+        // also, replacing the whole adapter uses a lot of resources
+        // and is slow
 //        (binding.recyclerView.adapter)?.
 //        notifyItemRangeChanged(0, melody.notes.size)
         binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
@@ -175,6 +174,8 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         // FIXME
         // notifyItemRangeChanged causes graphical issues, probably cause
         // recycling is disabled.
+        // also, replacing the whole adapter uses a lot of resources
+        // and is slow
 //        (binding.recyclerView.adapter)?.
 //        notifyItemRangeChanged(0, melody.notes.size)
         binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)

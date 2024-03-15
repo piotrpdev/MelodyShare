@@ -60,4 +60,5 @@
     <string name="title_description_error">Title and description have to be valid!</string>
     <string name="alpha_num_space_error">Letter, numbers, and spaces only</string>
     <string name="num_error">Numbers only</string>
+    <string name="search_icon_description">magnifying glass</string>
 </resources>

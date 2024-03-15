@@ -10,7 +10,7 @@ class MelodyMemStore : MelodyStore {
     private val melodies = ArrayList<MelodyModel>()
 
     override fun findAll(): List<MelodyModel> {
-        return melodies
+        return melodies.toMutableList()
     }
 
     override fun create(melody: MelodyModel) {
