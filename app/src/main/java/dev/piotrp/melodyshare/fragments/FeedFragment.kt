@@ -15,7 +15,6 @@ import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
-import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
@@ -30,7 +29,7 @@ import java.io.FileInputStream
 
 class FeedFragment : Fragment(), MelodyListener {
     private lateinit var app: MyApp
-    private val mediaPlayer = MediaPlayer()
+    private var mediaPlayer: MediaPlayer? = null
     private lateinit var filteredMelodies: List<MelodyModel>
 
     private var _binding: FragmentFeedBinding? = null
@@ -69,19 +68,6 @@ class FeedFragment : Fragment(), MelodyListener {
         binding.removeMelody.setOnClickListener { onRemoveMelodyClicked(it) }
         binding.addMelody.setOnClickListener { onAddMelodyClicked(it) }
         binding.searchTextInput.editText?.doAfterTextChanged { onSearchTextInputChanged(it) }
-
-        val risingMelody = filteredMelodies.find { it.title == "Rising Melody" }
-
-        if (risingMelody != null) {
-            val midiFile = File(requireActivity().filesDir.absolutePath + "${risingMelody.id}.mid")
-
-            // TODO: Move to separate thread or coroutine since IO is slow
-            // and we don't want to block UI thread
-            risingMelody.writeMidiToFile(midiFile)
-            playMidi(midiFile)
-        } else {
-            e { "'Rising Melody' not found" }
-        }
     }
 
     override fun onDestroyView() {
@@ -92,16 +78,27 @@ class FeedFragment : Fragment(), MelodyListener {
     private fun playMidi(file: File) =
         run {
             FileInputStream(file).use {
-                mediaPlayer.apply {
+                mediaPlayer?.apply {
+                    i { "Stopping and releasing mediaPlayer" }
+                    stop()
+                    release()
+                }
+                i { "Creating new mediaPlayer instance" }
+                mediaPlayer = MediaPlayer()
+                mediaPlayer?.apply {
+                    d { "Setting mediaPlayer audio attributes" }
                     setAudioAttributes(
                         AudioAttributes.Builder()
                             .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
                             .setUsage(AudioAttributes.USAGE_MEDIA)
                             .build(),
                     )
+                    d { "Setting mediaPlayer data source" }
                     setDataSource(it.fd)
-                    prepareAsync()
+                    d { "Setting setOnPreparedListener" }
                     setOnPreparedListener { start() }
+                    d { "Preparing mediaPlayer" }
+                    prepareAsync()
                 }
             }
         }
@@ -150,6 +147,21 @@ class FeedFragment : Fragment(), MelodyListener {
         val launcherIntent = Intent(requireActivity(), MelodyChangeActivity::class.java)
         launcherIntent.putExtra("melody_edit", melody)
         getResult.launch(launcherIntent)
+    }
+
+    override fun onPlayButtonClick(melody: MelodyModel) {
+        // TODO: Handle pausing
+        // TODO: Check if it's worth checking if MIDI file already exists and has same contents
+        val filePath = requireActivity().filesDir.absolutePath + "${melody.id}.mid"
+        val midiFile = File(filePath)
+
+        // TODO: Move to separate thread or coroutine since IO is slow
+        // and we don't want to block UI thread
+        // TODO: Maybe write on melody save instead of on every play
+        i { "Writing ${melody.title} (ID: ${melody.id}) to MIDI file at '${filePath}'" }
+        melody.writeMidiToFile(midiFile)
+        i { "Playing MIDI file at '${filePath}'" }
+        playMidi(midiFile)
     }
 
     @Suppress("UNUSED_PARAMETER")

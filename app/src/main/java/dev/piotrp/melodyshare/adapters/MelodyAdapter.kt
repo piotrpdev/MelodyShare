@@ -8,6 +8,7 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 interface MelodyListener {
     fun onMelodyClick(melody: MelodyModel)
+    fun onPlayButtonClick(melody: MelodyModel)
 }
 
 class MelodyAdapter(private var melodies: List<MelodyModel>, private val listener: MelodyListener) :
@@ -42,6 +43,7 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private val listene
             binding.melodyTitle.text = melody.title
             binding.melodyDescription.text = melody.description
             binding.root.setOnClickListener { listener.onMelodyClick(melody) }
+            binding.playButton.setOnClickListener { listener.onPlayButtonClick(melody) }
         }
     }
 }
