@@ -131,7 +131,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
             .show()
 
         i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
-        d { "Full melody ArrayList: ${app.melodies}" }
+        d { "Full melody ArrayList: ${app.melodies.findAll()}" }
 
         setResult(RESULT_OK)
         finish()
