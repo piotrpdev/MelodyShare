@@ -67,6 +67,7 @@ class MainActivity : AppCompatActivity() {
                     // Respond to navigation item 4 click
                     i { "Settings clicked" }
                     // TODO: Implement
+                    navController.navigate(R.id.SettingsFragment)
                     true
                 }
                 else -> false
