@@ -17,4 +17,9 @@
         android:name="dev.piotrp.melodyshare.fragments.SecondFragment"
         tools:layout="@layout/fragment_second">
     </fragment>
+    <fragment
+        android:id="@+id/SettingsFragment"
+        android:name="dev.piotrp.melodyshare.fragments.SettingsFragment"
+        tools:layout="@layout/fragment_settings">
+    </fragment>
 </navigation>

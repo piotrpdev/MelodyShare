@@ -2,7 +2,7 @@
 <resources>
     <string name="app_name">MelodyShare</string>
     <string name="button_message">Dodaj Melodię</string>
-    <string name="darkModeBtnText">Tryb Ciemny</string>
+    <string name="darkModeBtnTitle">Tryb Ciemny</string>
     <string name="lightModeBtnText">Tryb Świetlny</string>
     <string name="title">Tytuł</string>
     <string name="description">Opis</string>
@@ -26,4 +26,7 @@
     <string name="alpha_num_space_error">Tylko litery, cyfry i spacje</string>
     <string name="num_error">Tylko cyfry</string>
     <string name="search_icon_description">lupa</string>
+    <string name="darkModeBtnDescription">Zmień motyw</string>
+    <string name="not_signed_in">Nie zalogowany</string>
+    <string name="click_top_right">Kliknij ikonkę w prawym górnym rogu</string>
 </resources>

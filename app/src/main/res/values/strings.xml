@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">MelodyShare</string>
     <string name="button_message">Add Melody</string>
-    <string name="darkModeBtnText">Dark Mode</string>
+    <string name="darkModeBtnTitle">Dark Mode</string>
     <string name="lightModeBtnText">Light Mode</string>
     <string name="title">Title</string>
     <string name="description">Description</string>
@@ -63,4 +63,7 @@
     <string name="search_icon_description">magnifying glass</string>
     <string name="lorem" translatable="false">Lorem</string>
     <string name="ipsum" translatable="false">Ipsum</string>
+    <string name="darkModeBtnDescription">Change theme</string>
+    <string name="not_signed_in">Not Signed In</string>
+    <string name="click_top_right">Click on the icon in the top right</string>
 </resources>
