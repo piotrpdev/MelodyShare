@@ -3,12 +3,16 @@ package dev.piotrp.melodyshare
 import android.app.Application
 import com.github.ajalt.timberkt.Timber
 import com.github.ajalt.timberkt.i
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import dev.piotrp.melodyshare.models.MelodyMemStore
 import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
 import timber.log.Timber.i
 
 class MyApp : Application() {
+    lateinit var auth: FirebaseAuth
     val melodies = MelodyMemStore()
 
     override fun onCreate() {
@@ -16,6 +20,9 @@ class MyApp : Application() {
 
         Timber.plant(Timber.DebugTree())
         i("MelodyShare started")
+
+        i { "Setting auth variable in app" }
+        auth = Firebase.auth
 
         i { "Adding example melody to store" }
 

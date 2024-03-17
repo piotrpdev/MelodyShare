@@ -15,17 +15,15 @@ import com.bumptech.glide.request.transition.Transition
 import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
 import com.google.android.material.snackbar.Snackbar
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.OAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var app: MyApp
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var binding: ActivityMainBinding
-    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,11 +31,11 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        app = this.applicationContext as MyApp
+
         binding.toolbar.title = title
 
         setSupportActionBar(binding.toolbar)
-
-        auth = Firebase.auth
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment_content_actual_main) as NavHostFragment
         val navController = navHostFragment.navController
@@ -76,7 +74,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setUserIconToAvatar(menuItem: MenuItem) {
-        val currentUser = auth.currentUser
+        val currentUser = app.auth.currentUser
 
         if (currentUser != null) {
             // https://stackoverflow.com/a/33042690/19020549
@@ -108,7 +106,7 @@ class MainActivity : AppCompatActivity() {
         menuInflater.inflate(R.menu.menu_main, menu)
 
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
+        val currentUser = app.auth.currentUser
         if (currentUser != null) {
             i { "User already signed in: $currentUser" }
 
@@ -121,11 +119,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.sign_in -> {
-                val currentUser = auth.currentUser
+                val currentUser = app.auth.currentUser
                 if (currentUser == null) {
                     val provider = OAuthProvider.newBuilder("github.com")
 
-                    val pendingResultTask = auth.pendingAuthResult
+                    val pendingResultTask = app.auth.pendingAuthResult
                     if (pendingResultTask != null) {
                         // There's something already here! Finish the sign-in for your user.
                         pendingResultTask
@@ -141,7 +139,7 @@ class MainActivity : AppCompatActivity() {
                                     .show()
                             }
                     } else {
-                        auth
+                        app.auth
                             .startActivityForSignInWithProvider(this, provider.build())
                             .addOnSuccessListener {
                                 i { "User sign-in success: ${it.user}" }
@@ -157,7 +155,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 } else {
                     i { "Signing out user" }
-                    auth.signOut()
+                    app.auth.signOut()
                     item.setIcon(R.drawable.account_circle)
                 }
             }
