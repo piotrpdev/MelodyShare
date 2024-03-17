@@ -7,9 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
+import com.bumptech.glide.Glide
 import com.github.ajalt.timberkt.i
+import com.google.firebase.auth.FirebaseAuth.AuthStateListener
 import dev.piotrp.melodyshare.MyApp
+import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.FragmentSettingsBinding
+
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
@@ -21,6 +25,8 @@ class SettingsFragment : Fragment() {
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
+
+    private lateinit var authStateListener: AuthStateListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,11 +48,39 @@ class SettingsFragment : Fragment() {
         binding.themeSwitch.setOnClickListener { onThemeSwitchToggle(it) }
 
         updateSwitchBasedOnTheme()
+
+        authStateListener = AuthStateListener {
+            displayUserDetails()
+        }
+
+        // authStateListener is apparently called once when added here
+        app.auth.addAuthStateListener(authStateListener)
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
+        app.auth.removeAuthStateListener(authStateListener)
         _binding = null
+    }
+
+    private fun displayUserDetails() {
+        i { "Displaying user details in settings" }
+        val currentUser = app.auth.currentUser
+
+        if (currentUser == null) {
+            binding.avatarImageView.setImageResource(R.mipmap.ic_launcher_round)
+            binding.userNameText.text = getString(R.string.not_signed_in)
+            binding.userEmailText.text = getString(R.string.click_top_right)
+            return
+        }
+
+        // TODO: Handle offline caching/usage
+        Glide.with(this)
+            .load(currentUser.photoUrl)
+            .into(binding.avatarImageView)
+
+        binding.userNameText.text = currentUser.displayName
+        binding.userEmailText.text = currentUser.email
     }
 
     private fun updateSwitchBasedOnTheme() {
