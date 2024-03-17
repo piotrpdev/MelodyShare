@@ -13,9 +13,9 @@
         tools:layout="@layout/fragment_feed">
     </fragment>
     <fragment
-        android:id="@+id/SecondFragment"
-        android:name="dev.piotrp.melodyshare.fragments.SecondFragment"
-        tools:layout="@layout/fragment_second">
+        android:id="@+id/PlaceholderFragment"
+        android:name="dev.piotrp.melodyshare.fragments.PlaceholderFragment"
+        tools:layout="@layout/fragment_placeholder">
     </fragment>
     <fragment
         android:id="@+id/SettingsFragment"
