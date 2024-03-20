@@ -6,14 +6,17 @@ import com.github.ajalt.timberkt.i
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
-import dev.piotrp.melodyshare.models.MelodyMemStore
+import dev.piotrp.melodyshare.models.MelodyJsonStore
 import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
+import dev.piotrp.melodyshare.models.MelodyStore
 import timber.log.Timber.i
+import java.io.File
+import java.util.UUID
 
 class MyApp : Application() {
     lateinit var auth: FirebaseAuth
-    val melodies = MelodyMemStore()
+    lateinit var melodies: MelodyStore
 
     override fun onCreate() {
         super.onCreate()
@@ -24,11 +27,20 @@ class MyApp : Application() {
         i { "Setting auth variable in app" }
         auth = Firebase.auth
 
-        i { "Adding example melody to store" }
+        i { "Initializing MelodyStore" }
+        // TODO: Check if this File could somehow get gc'd and cause a NullPointerException
+        val jsonFile = File(filesDir.absolutePath + "/" + "melodies.json")
+        melodies = MelodyJsonStore(jsonFile)
 
-        // TODO: load example MIDI from asset?
-        melodies.create(generateRisingMelody())
-        melodies.create(generateLoweringMelody())
+        // TODO: Make this behaviour opt-in with a setting?
+        val melodyTitles = arrayOf("Rising Melody", "Lowering Melody")
+        if (melodies.findAll().none { melodyTitles.contains(it.title) }) {
+            i { "Adding example melodies to store" }
+
+            // TODO: load example MIDI from asset?
+            melodies.create(generateRisingMelody())
+            melodies.create(generateLoweringMelody())
+        }
     }
 
     private fun generateRisingMelody(): MelodyModel {
@@ -46,7 +58,7 @@ class MyApp : Application() {
             risingNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
         }
 
-        return MelodyModel(0, "Rising Melody", "Rising Melody", 228f, risingNotes)
+        return MelodyModel(UUID.randomUUID(), "Rising Melody", "Rising Melody", 228f, risingNotes)
     }
 
     private fun generateLoweringMelody(): MelodyModel {
@@ -64,7 +76,7 @@ class MyApp : Application() {
             loweringNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
         }
 
-        return MelodyModel(0, "Lowering Melody", "Lowering Melody", 228f, loweringNotes)
+        return MelodyModel(UUID.randomUUID(), "Lowering Melody", "Lowering Melody", 228f, loweringNotes)
     }
 
     companion object {

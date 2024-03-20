@@ -2,10 +2,7 @@ package dev.piotrp.melodyshare.models
 
 import timber.log.Timber.i
 
-var lastId = 0L
-
-internal fun getId() = lastId++
-
+@Suppress("unused")
 class MelodyMemStore : MelodyStore {
     private val melodies = ArrayList<MelodyModel>()
 
@@ -14,7 +11,6 @@ class MelodyMemStore : MelodyStore {
     }
 
     override fun create(melody: MelodyModel) {
-        melody.id = getId()
         melodies.add(melody)
         logAll()
     }

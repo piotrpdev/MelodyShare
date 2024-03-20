@@ -2,6 +2,7 @@ package dev.piotrp.melodyshare.models
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 
 /**
  * Represents a single note in a melody, holds some MIDI properties.
@@ -17,6 +18,7 @@ import kotlinx.parcelize.Parcelize
  *
  * @see [MelodyModel]
  */
+@Serializable
 @Parcelize
 data class MelodyNote(var id: Int, var pitch: Int, var velocity: Int, var tick: Long, var duration: Long) :
     Parcelable
