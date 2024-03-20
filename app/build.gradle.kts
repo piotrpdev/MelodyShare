@@ -7,6 +7,7 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint")
     id("org.jetbrains.dokka")
     id("jacoco")
+    kotlin("plugin.serialization")
 }
 
 android {
@@ -62,6 +63,7 @@ dependencies {
     implementation("com.github.bumptech.glide:glide:4.16.0")
     ksp("com.github.bumptech.glide:ksp:4.14.2")
     implementation("com.github.LeffelMania:android-midi-lib:f8f2a6645")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.0")
 }
 
 ktlint {

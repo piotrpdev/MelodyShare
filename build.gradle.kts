@@ -6,4 +6,5 @@ plugins {
     id("com.google.devtools.ksp") version "1.9.10-1.0.13" apply false
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0" apply false
     id("org.jetbrains.dokka") version "1.9.20" apply false
+    kotlin("plugin.serialization") version "1.9.23" apply false
 }
