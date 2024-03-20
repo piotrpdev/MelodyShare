@@ -6,6 +6,7 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.Serializable
 import java.io.File
 
 /**
@@ -17,6 +18,7 @@ import java.io.File
  * @property bpm The beats per minute of the melody, determines how fast it plays.
  * @property notes A list of [MelodyNote] objects that represent the individual notes of the melody.
  */
+@Serializable
 @Parcelize
 data class MelodyModel(
     var id: Long = 0,
