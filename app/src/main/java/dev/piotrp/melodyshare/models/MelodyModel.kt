@@ -6,9 +6,30 @@ import com.leff.midi.MidiTrack
 import com.leff.midi.event.meta.Tempo
 import com.leff.midi.event.meta.TimeSignature
 import kotlinx.parcelize.Parcelize
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.descriptors.PrimitiveKind
+import kotlinx.serialization.descriptors.PrimitiveSerialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import java.io.File
+import java.util.UUID
 
+// https://stackoverflow.com/a/65398285/19020549
+object UUIDSerializer : KSerializer<UUID> {
+    override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
+
+    override fun deserialize(decoder: Decoder): UUID {
+        return UUID.fromString(decoder.decodeString())
+    }
+
+    override fun serialize(encoder: Encoder, value: UUID) {
+        encoder.encodeString(value.toString())
+    }
+}
+
+// TODO: Add 'author' field to melody that matches user id
+// TODO: Add 'createdAt' field
 /**
  * A class that holds all of the data needed to create a MIDI file along with some metadata.
  *
@@ -21,7 +42,8 @@ import java.io.File
 @Serializable
 @Parcelize
 data class MelodyModel(
-    var id: Long = 0,
+    @Serializable(with = UUIDSerializer::class)
+    var id: UUID = UUID.randomUUID(),
     var title: String = "",
     var description: String = "",
     var bpm: Float = 120f,
