@@ -2,6 +2,7 @@ package dev.piotrp.melodyshare.models
 
 import timber.log.Timber.i
 
+@Suppress("unused")
 class MelodyMemStore : MelodyStore {
     private val melodies = ArrayList<MelodyModel>()
 
