@@ -152,7 +152,7 @@ class FeedFragment : Fragment(), MelodyListener {
     override fun onPlayButtonClick(melody: MelodyModel) {
         // TODO: Handle pausing
         // TODO: Check if it's worth checking if MIDI file already exists and has same contents
-        val filePath = requireActivity().filesDir.absolutePath + "${melody.id}.mid"
+        val filePath = requireActivity().filesDir.absolutePath + "/" + "${melody.id}.mid"
         val midiFile = File(filePath)
 
         // TODO: Move to separate thread or coroutine since IO is slow
