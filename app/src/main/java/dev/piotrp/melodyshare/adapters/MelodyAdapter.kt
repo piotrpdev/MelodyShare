@@ -42,6 +42,8 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private val listene
         ) {
             binding.melodyTitle.text = melody.title
             binding.melodyDescription.text = melody.description
+            // TODO: Can this be done more efficiently?
+            binding.melodyView.setMelody(melody)
             binding.root.setOnClickListener { listener.onMelodyClick(melody) }
             binding.playButton.setOnClickListener { listener.onPlayButtonClick(melody) }
         }
