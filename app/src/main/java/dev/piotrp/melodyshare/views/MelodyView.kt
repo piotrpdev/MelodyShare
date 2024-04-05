@@ -18,6 +18,19 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 // Taken from https://stackoverflow.com/q/61344444/19020549
 class MelodyView @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle) {
+    // ? Can only fit so much on screen
+    private val pitchMax = 72
+    private val pitchMin = 48
+    // TODO: Adjust this depending on BPM?
+    // ? eight quarter notes
+    private val tickMax = 480 * 8
+
+    private val minX = 2f
+    private val minY = 2f
+
+    private var noteHeightUnit: Float = 0f
+    private var noteWidthUnit: Float = 0f
+
     private var viewHeight: Float = 0f
     private var viewWidth: Float = 0f
 
@@ -30,6 +43,24 @@ class MelodyView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         strokeWidth = 1f
     }
 
+    private val textPaint = Paint().apply {
+        isAntiAlias = true
+        // TODO: Does calling this method cause a slowdown?
+        // https://stackoverflow.com/a/64509627/19020549
+        color = MaterialColors.getColor(context, R.attr.colorPrimary, Color.BLACK)
+        style = Paint.Style.FILL
+        textAlign = Paint.Align.CENTER
+        textSize = 30f
+    }
+
+    private val notePaint = Paint().apply {
+        isAntiAlias = true
+        // TODO: Does calling this method cause a slowdown?
+        // https://stackoverflow.com/a/64509627/19020549
+        color = MaterialColors.getColor(context, R.attr.colorPrimary, Color.BLACK)
+        style = Paint.Style.FILL
+    }
+
     private var melodyModel: MelodyModel? = null
 
     init {
@@ -37,6 +68,12 @@ class MelodyView @JvmOverloads constructor(context: Context, attrs: AttributeSet
         this.doOnPreDraw {
             viewHeight = height.toFloat()
             viewWidth = width.toFloat()
+            // Extra minY for outline strokeWidth
+            noteHeightUnit = (viewHeight - (minY * 3)) / (pitchMax - pitchMin)
+            noteWidthUnit = (viewWidth - (minX * 3)) / tickMax
+
+//            d { "noteHeightUnit: $noteHeightUnit" }
+//            d { "noteWidthUnit: $noteWidthUnit" }
         }
         setLayerType(LAYER_TYPE_SOFTWARE, null)
     }
@@ -49,8 +86,28 @@ class MelodyView @JvmOverloads constructor(context: Context, attrs: AttributeSet
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        if (melodyModel != null) {
-            canvas.drawRoundRect(2f, 2f, viewWidth -2f, viewHeight - 2f, 10f, 10f, outlinePaint)
+        // TODO: Add note grid?
+//        d { "Drawing melody RoundRect at (x1: ${minX}, y1: ${minY}, x2: ${viewWidth - minX}, y2: ${viewHeight - minY})" }
+        canvas.drawRoundRect(minX, minY, viewWidth - minX, viewHeight - minY, 10f, 10f, outlinePaint)
+
+        if (melodyModel == null) {
+            // https://stackoverflow.com/a/11121873/19020549
+            canvas.drawText("melodyModel is null", viewWidth / 2, ((viewHeight / 2) - ((textPaint.descent() + textPaint.ascent()) / 2)), textPaint)
+            return
+        }
+
+        melodyModel!!.notes.forEach {
+            if (it.pitch !in pitchMin..pitchMax) return@forEach
+            if (it.tick >= tickMax) return@forEach
+
+            // TODO: Maybe scale timeline depending on bpm?
+            val noteY = viewHeight - (((it.pitch - pitchMin) * noteHeightUnit) + minY)
+            val noteX = (it.tick * noteWidthUnit) + minX
+
+//            d { "Drawing:  [pitch: ${it.pitch}, tick: ${it.tick}] at (x1: ${noteX}, y1: ${noteY}, x2: ${noteX + noteWidthUnit}, y2: ${noteY + noteHeightUnit})" }
+
+            // TODO: Change color for notes on same x co-ord?
+            canvas.drawRect(noteX, noteY, noteX + (it.duration * noteWidthUnit), noteY - noteHeightUnit, notePaint)
         }
     }
 }
