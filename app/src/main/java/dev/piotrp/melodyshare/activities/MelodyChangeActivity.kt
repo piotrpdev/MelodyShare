@@ -194,6 +194,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         editable: Editable?,
     ): Boolean {
         // TODO: Handle logic and conversion
+        // TODO: Restricts to 2 octaves?
         i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: $editable" }
         val parsedValue = editable.toString().toIntOrNull()
         melodyNote.pitch = parsedValue ?: melodyNote.pitch
@@ -206,6 +207,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         editable: Editable?,
     ): Boolean {
         // TODO: Handle logic and conversion
+        // TODO: Remove for simplicity? (e.g. always 100)
         i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: $editable" }
         val parsedValue = editable.toString().toIntOrNull()
         melodyNote.velocity = parsedValue ?: melodyNote.velocity
@@ -218,6 +220,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         editable: Editable?,
     ): Boolean {
         // TODO: Handle logic and conversion
+        // TODO: Restrict to max length of eight quarters?
         i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: $editable" }
         val parsedValue = editable.toString().toLongOrNull()
         melodyNote.tick = parsedValue ?: melodyNote.tick
@@ -230,6 +233,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         editable: Editable?,
     ): Boolean {
         // TODO: Handle logic and conversion
+        // TODO: Restrict to max length of eight quarters?
         i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: $editable" }
         val parsedValue = editable.toString().toLongOrNull()
         melodyNote.duration = parsedValue ?: melodyNote.duration

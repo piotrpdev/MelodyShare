@@ -26,12 +26,13 @@
         <TextView
             android:id="@+id/melodyDescription"
             android:layout_width="wrap_content"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_below="@id/melodyTitle"
-            android:layout_marginBottom="2dp"
+            android:layout_marginBottom="16dp"
             android:textAppearance="?attr/textAppearanceBodyMedium"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/melodyView"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/melodyTitle"
             tools:text="A Description" />
 
         <Button
@@ -39,11 +40,22 @@
             style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/search_icon_description"
+            android:contentDescription="@string/play_icon_description"
             app:icon="@android:drawable/ic_media_play"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/melodyView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+
+        <dev.piotrp.melodyshare.views.MelodyView
+            android:id="@+id/melodyView"
+            android:layout_width="wrap_content"
+            android:layout_height="100dp"
+            android:layout_marginTop="16dp"
+            android:elevation="2dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/playButton" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -58,7 +58,7 @@ class MyApp : Application() {
             risingNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
         }
 
-        return MelodyModel(UUID.randomUUID(), "Rising Melody", "Rising Melody", 228f, risingNotes)
+        return MelodyModel(UUID.randomUUID(), "Rising Melody", "Melody with notes of increasing pitch", 228f, risingNotes)
     }
 
     private fun generateLoweringMelody(): MelodyModel {
@@ -76,7 +76,7 @@ class MyApp : Application() {
             loweringNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
         }
 
-        return MelodyModel(UUID.randomUUID(), "Lowering Melody", "Lowering Melody", 228f, loweringNotes)
+        return MelodyModel(UUID.randomUUID(), "Lowering Melody", "Melody with notes of decreasing pitch", 228f, loweringNotes)
     }
 
     companion object {
