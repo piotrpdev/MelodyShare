@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
+import com.github.ajalt.timberkt.w
+import com.google.android.material.snackbar.Snackbar
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.activities.MelodyChangeActivity
@@ -30,7 +32,7 @@ import java.io.FileInputStream
 class FeedFragment : Fragment(), MelodyListener {
     private lateinit var app: MyApp
     private var mediaPlayer: MediaPlayer? = null
-    private lateinit var filteredMelodies: List<MelodyModel>
+    private lateinit var filteredMelodies: MutableList<MelodyModel>
 
     private var _binding: FragmentFeedBinding? = null
 
@@ -59,10 +61,9 @@ class FeedFragment : Fragment(), MelodyListener {
         super.onViewCreated(view, savedInstanceState)
 
         app = activity?.applicationContext as MyApp
-        filteredMelodies = app.melodies.findAll()
+        filteredMelodies = app.melodies.findAll().toMutableList()
 
-        val layoutManager = LinearLayoutManager(requireActivity())
-        binding.recyclerView.layoutManager = layoutManager
+        binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, this)
 
         binding.removeMelody.setOnClickListener { onRemoveMelodyClicked(it) }
@@ -107,19 +108,68 @@ class FeedFragment : Fragment(), MelodyListener {
     private val getResult =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult(),
-        ) {
-            if (it.resultCode == Activity.RESULT_OK) {
-                filteredMelodies = app.melodies.findAll()
-                // TODO: Replace with something smarter
-                binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, this)
+        ) { activityResult ->
+            if (activityResult.resultCode == Activity.RESULT_OK) {
+                // TODO: Maybe do a get in case another user changed something
+//                filteredMelodies.addAll(app.melodies.findAll().toMutableList())
+//                binding.recyclerView.adapter!!.notifyDataSetChanged()
 
-                val searchText = binding.searchTextInput.editText?.text
-                if (searchText.toString() !== "null") {
-                    onSearchTextInputChanged(searchText)
+                if (activityResult.data == null) {
+                    w { "Something went wrong, result data from MelodyChangeActivity is null" }
+                    return@registerForActivityResult
                 }
+
+                val messageId: Int
+
+                @Suppress("DEPRECATION")
+                val melody = activityResult.data!!.extras?.getParcelable<MelodyModel>("melody")
+
+                if (melody == null) {
+                    w { "Something went wrong, melody extra from MelodyChangeActivity is null" }
+                    return@registerForActivityResult
+                }
+
+                val searchText = binding.searchTextInput.editText!!.text
+                if (searchText.toString() !== "null") {
+                    d { "Trying to add/remove melody with filter. Removing filter..." }
+                    binding.searchTextInput.editText!!.text!!.clear()
+                }
+
+                if (activityResult.data!!.hasExtra("melody_edit")) {
+                    messageId = R.string.button_clicked_message_saved
+
+                    val localMelodyIdx = filteredMelodies.indexOfFirst { it.id == melody.id }
+
+                    if (localMelodyIdx == -1) {
+                        w { "Something went wrong, can't find modified melody locally" }
+                        return@registerForActivityResult
+                    }
+
+                    app.melodies.update(melody)
+                    filteredMelodies[localMelodyIdx] = melody
+                    binding.recyclerView.adapter!!.notifyItemChanged(localMelodyIdx)
+                } else {
+                    messageId = R.string.button_clicked_message
+
+                    app.melodies.create(melody)
+                    filteredMelodies.add(melody)
+                    // TODO: Need to notify item was added here but not in other cases
+                    //  for some reason. Should check this doesn't cause errors.
+                    binding.recyclerView.adapter!!.notifyItemChanged(binding.recyclerView.adapter!!.itemCount)
+                }
+
+                val message = getString(messageId, melody.title)
+
+                i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
+                d { "Full melody ArrayList: ${app.melodies.findAll()}" }
+
+                Snackbar
+                    .make(binding.root, message, Snackbar.LENGTH_LONG)
+                    .show()
             }
         }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSearchTextInputChanged(editable: Editable?) {
         val parsedTitle = editable.toString().trim()
 
@@ -132,11 +182,12 @@ class FeedFragment : Fragment(), MelodyListener {
 
             // TODO: Fetching from firestore/IO on every search character
             // change is extremely inefficient, find a better solution
-            filteredMelodies = app.melodies.findAll().filter { it.title.lowercase().contains(parsedTitle.lowercase()) }
+            filteredMelodies.clear()
+            filteredMelodies.addAll(app.melodies.findAll().filter { it.title.lowercase().contains(parsedTitle.lowercase()) })
 
             d { "Search result: [${filteredMelodies.joinToString { it.title }}]" }
 
-            binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, this)
+            binding.recyclerView.adapter!!.notifyDataSetChanged()
         } else {
             binding.searchTextInput.isErrorEnabled = true
             binding.searchTextInput.error = getString(R.string.alpha_num_space_error)
@@ -145,7 +196,8 @@ class FeedFragment : Fragment(), MelodyListener {
 
     override fun onMelodyClick(melody: MelodyModel) {
         val launcherIntent = Intent(requireActivity(), MelodyChangeActivity::class.java)
-        launcherIntent.putExtra("melody_edit", melody)
+        // TODO: Check if .copy() is needed
+        launcherIntent.putExtra("melody_edit", melody.copy())
         getResult.launch(launcherIntent)
     }
 
@@ -186,9 +238,9 @@ class FeedFragment : Fragment(), MelodyListener {
         i { "Removing melody (ID: ${lastMelody.id}, Title: ${lastMelody.title})" }
 
         app.melodies.remove(lastMelody)
-        filteredMelodies = app.melodies.findAll()
-        // TODO: Replace with something smarter
-        binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, this)
+        // TODO: Maybe do a get in case another user changed something
+        filteredMelodies.removeIf { it.id == lastMelody.id }
+//        binding.recyclerView.adapter!!.notifyDataSetChanged()
 
         val searchText = binding.searchTextInput.editText?.text
         if (searchText.toString() !== "null") {

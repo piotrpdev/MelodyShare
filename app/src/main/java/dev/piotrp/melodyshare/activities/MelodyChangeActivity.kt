@@ -1,5 +1,7 @@
 package dev.piotrp.melodyshare.activities
 
+import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.view.Menu
@@ -24,7 +26,6 @@ import java.util.UUID
 // TODO: Change to better name
 class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private lateinit var binding: ActivityMelodyChangeBinding
-    private var buttonPressedCount: Int = 0
     private var melody = MelodyModel()
     private lateinit var app: MyApp
 
@@ -38,7 +39,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = MelodyNoteAdapter(ArrayList(), this)
 
         app = application as MyApp
         i { "MainActivity started." }
@@ -48,10 +48,11 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
             melody = intent.extras?.getParcelable("melody_edit")!!
             binding.titleTextField.editText?.setText(melody.title)
             binding.descriptionTextField.editText?.setText(melody.description)
-            binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
 
             binding.button.text = getString(R.string.save_melody)
         }
+
+        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
 
         binding.titleTextField.editText?.doAfterTextChanged {
             val titleValid = isStringOnlyAlphaNumSpace(it.toString().trim())
@@ -93,8 +94,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
 
     @Suppress("UNUSED_PARAMETER")
     fun onAddMelodyClicked(view: View) {
-        buttonPressedCount++
-
         val titleText = binding.titleTextField.editText?.text.toString().trim()
         val descriptionText = binding.descriptionTextField.editText?.text.toString().trim()
 
@@ -113,31 +112,18 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         melody.title = titleText
         melody.description = descriptionText
 
-        val messageId: Int
+        d { "Returning melody from onAddMelodyClicked(): $melody" }
 
-        if (intent.hasExtra("melody_edit")) {
-            messageId = R.string.button_clicked_message_saved
+        val replyIntent = Intent()
 
-            app.melodies.update(melody.copy())
-        } else {
-            messageId = R.string.button_clicked_message
+        if (intent.hasExtra("melody_edit")) replyIntent.putExtra("melody_edit", true)
+        replyIntent.putExtra("melody", melody.copy())
 
-            app.melodies.create(melody.copy())
-        }
-
-        val message = getString(messageId, melody.title)
-
-        Snackbar
-            .make(binding.root, message, Snackbar.LENGTH_LONG)
-            .show()
-
-        i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
-        d { "Full melody ArrayList: ${app.melodies.findAll()}" }
-
-        setResult(RESULT_OK)
+        setResult(RESULT_OK, replyIntent)
         finish()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNUSED_PARAMETER")
     fun onAddNoteClicked(view: View) {
         i { "Adding MelodyNote to Melody" }
@@ -146,20 +132,12 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
 
         melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
 
-        // FIXME
-        // notifyItemRangeChanged causes graphical issues, probably cause
-        // recycling is disabled.
-        // also, replacing the whole adapter uses a lot of resources
-        // and is slow
-//        (binding.recyclerView.adapter)?.
-//        notifyItemRangeChanged(0, melody.notes.size)
-        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+        // TODO: Might need to notify, but not doing it works fine for some reason
 
-        // Setting a new adapter sends us back to the top, this is nice
-        // to have regardless though
         binding.recyclerView.scrollToPosition(melody.notes.size - 1)
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     @Suppress("UNUSED_PARAMETER")
     fun onRemoveNoteClicked(view: View) {
         i { "Removing MelodyNote from Melody" }
@@ -172,20 +150,12 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
 
         melody.notes.remove(lastNote)
 
-        // FIXME
-        // notifyItemRangeChanged causes graphical issues, probably cause
-        // recycling is disabled.
-        // also, replacing the whole adapter uses a lot of resources
-        // and is slow
-//        (binding.recyclerView.adapter)?.
-//        notifyItemRangeChanged(0, melody.notes.size)
-        binding.recyclerView.adapter = MelodyNoteAdapter(melody.notes, this)
+        // TODO: Might need to notify, but not doing it works fine for some reason
 
+        // TODO: Maybe use itemCount from adapter here instead
         val notesSize = melody.notes.size
 
         if (notesSize > 0) {
-            // Setting a new adapter sends us back to the top, this is nice
-            // to have regardless though
             binding.recyclerView.scrollToPosition(melody.notes.size - 1)
         }
     }
