@@ -27,5 +27,5 @@ data class MelodyNote(
     var pitch: Int,
     var velocity: Int,
     var tick: Long,
-    var duration: Long
+    var duration: Long,
 ) : Parcelable

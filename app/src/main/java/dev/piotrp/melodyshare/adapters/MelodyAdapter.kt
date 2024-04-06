@@ -8,6 +8,7 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 interface MelodyListener {
     fun onMelodyClick(melody: MelodyModel)
+
     fun onPlayButtonClick(melody: MelodyModel)
 }
 

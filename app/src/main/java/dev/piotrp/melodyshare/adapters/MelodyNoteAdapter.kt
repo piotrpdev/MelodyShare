@@ -31,7 +31,10 @@ interface MelodyNoteListener {
     ): Boolean
 }
 
-class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private val listener: MelodyNoteListener) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
+class MelodyNoteAdapter(
+    private var melodyNotes: ArrayList<MelodyNote>,
+    private val listener: MelodyNoteListener,
+) : RecyclerView.Adapter<MelodyNoteAdapter.MainHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,
@@ -61,7 +64,7 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
 
     class MainHolder(private val binding: CardMelodyNoteBinding) :
         RecyclerView.ViewHolder(binding.root) {
-            private var oldMelodyNote: MelodyNote? = null
+        private var oldMelodyNote: MelodyNote? = null
         private var bindedMelodyNote: MelodyNote? = null
         private var isPitchBindChange = false
         private var isPitchTextFieldListenerSet = false
@@ -99,8 +102,9 @@ class MelodyNoteAdapter(private var melodyNotes: ArrayList<MelodyNote>, private 
             // `doAfterTextChanged` may use melodyNote from when it was created instead of current
             bindedMelodyNote = melodyNote
 
-            if (oldMelodyNote == null)
+            if (oldMelodyNote == null) {
                 oldMelodyNote = melodyNote
+            }
 
             if (bindedMelodyNote!!.id != oldMelodyNote!!.id) {
 //                d { "New: ${bindedMelodyNote!!.id.toString().slice(0..6)}, old: ${oldMelodyNote!!.id.toString().slice(0..6)}" }

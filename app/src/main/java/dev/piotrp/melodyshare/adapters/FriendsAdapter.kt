@@ -11,11 +11,17 @@ import dev.piotrp.melodyshare.databinding.CardFriendBinding
 import dev.piotrp.melodyshare.models.FirestoreUser
 
 interface FriendsListener {
-    fun onActionButtonClick(user: FirestoreUser, currentFirestoreUser: FirestoreUser)
+    fun onActionButtonClick(
+        user: FirestoreUser,
+        currentFirestoreUser: FirestoreUser,
+    )
 }
 
-class FriendsAdapter(private var friends: List<FirestoreUser>, private val currentFirestoreUser: FirestoreUser, private val listener: FriendsListener) :
-    RecyclerView.Adapter<FriendsAdapter.MainHolder>() {
+class FriendsAdapter(
+    private var friends: List<FirestoreUser>,
+    private val currentFirestoreUser: FirestoreUser,
+    private val listener: FriendsListener,
+) : RecyclerView.Adapter<FriendsAdapter.MainHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int,

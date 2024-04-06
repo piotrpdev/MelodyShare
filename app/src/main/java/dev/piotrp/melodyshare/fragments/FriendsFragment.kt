@@ -56,9 +56,10 @@ class FriendsFragment : Fragment(), FriendsListener {
         app = activity?.applicationContext as MyApp
 
         // TODO: Handle offline
-        authStateListener = FirebaseAuth.AuthStateListener {
-            displayUserFriends()
-        }
+        authStateListener =
+            FirebaseAuth.AuthStateListener {
+                displayUserFriends()
+            }
 
         // authStateListener is apparently called once when added here
         app.auth.addAuthStateListener(authStateListener)
@@ -80,44 +81,48 @@ class FriendsFragment : Fragment(), FriendsListener {
         if (friendsSnapshotListener != null) return
 
         i { "Fetching friends" }
-        friendsSnapshotListener = app.db.collection("users")
-            .addSnapshotListener (MetadataChanges.INCLUDE) { snapshot, e ->
-                if (e != null) {
-                    w { "Error getting documents." }
-                    return@addSnapshotListener
-                }
+        friendsSnapshotListener =
+            app.db.collection("users")
+                .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, e ->
+                    if (e != null) {
+                        w { "Error getting documents." }
+                        return@addSnapshotListener
+                    }
 
-                i { "Success getting snapshot." }
+                    i { "Success getting snapshot." }
 
-                // TODO: Make more efficient, currently adapter is replaced twice,
-                // Once on change pending and once on metadata confirm
+                    // TODO: Make more efficient, currently adapter is replaced twice,
+                    // Once on change pending and once on metadata confirm
 //                d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
 
-                if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
-                    // TODO: Maybe handle this for nicer UX
-                    // https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
-                    i { "Skipping snapshot because it has pending local changes" }
-                    return@addSnapshotListener
-                }
-
-                val users: MutableList<FirestoreUser> = arrayListOf()
-                var currentFirestoreUser: FirestoreUser? = null
-
-                for (document in snapshot!!) {
-                    val user = document.toObject<FirestoreUser>()
-                    if (user.uid == currentUser.uid) {
-                        currentFirestoreUser = user
-                        continue
+                    if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
+                        // TODO: Maybe handle this for nicer UX
+                        // https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
+                        i { "Skipping snapshot because it has pending local changes" }
+                        return@addSnapshotListener
                     }
-                    users.add(user)
-                }
 
-                // TODO: Do this better, add loading spinner, handle offline case
-                binding.recyclerView.adapter = FriendsAdapter(users, currentFirestoreUser!!, this)
-            }
+                    val users: MutableList<FirestoreUser> = arrayListOf()
+                    var currentFirestoreUser: FirestoreUser? = null
+
+                    for (document in snapshot!!) {
+                        val user = document.toObject<FirestoreUser>()
+                        if (user.uid == currentUser.uid) {
+                            currentFirestoreUser = user
+                            continue
+                        }
+                        users.add(user)
+                    }
+
+                    // TODO: Do this better, add loading spinner, handle offline case
+                    binding.recyclerView.adapter = FriendsAdapter(users, currentFirestoreUser!!, this)
+                }
     }
 
-    override fun onActionButtonClick(user: FirestoreUser, currentFirestoreUser: FirestoreUser) {
+    override fun onActionButtonClick(
+        user: FirestoreUser,
+        currentFirestoreUser: FirestoreUser,
+    ) {
         if (currentFirestoreUser.friends.contains(user.uid)) {
             if (user.friends.contains(currentFirestoreUser.uid)) {
                 pendingChangesCount++

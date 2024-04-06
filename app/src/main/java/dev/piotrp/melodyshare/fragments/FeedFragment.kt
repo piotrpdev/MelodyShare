@@ -210,9 +210,9 @@ class FeedFragment : Fragment(), MelodyListener {
         // TODO: Move to separate thread or coroutine since IO is slow
         // and we don't want to block UI thread
         // TODO: Maybe write on melody save instead of on every play
-        i { "Writing ${melody.title} (ID: ${melody.id}) to MIDI file at '${filePath}'" }
+        i { "Writing ${melody.title} (ID: ${melody.id}) to MIDI file at '$filePath'" }
         melody.writeMidiToFile(midiFile)
-        i { "Playing MIDI file at '${filePath}'" }
+        i { "Playing MIDI file at '$filePath'" }
         playMidi(midiFile)
     }
 

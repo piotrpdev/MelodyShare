@@ -23,13 +23,17 @@ object UUIDSerializer : KSerializer<UUID> {
         return UUID.fromString(decoder.decodeString())
     }
 
-    override fun serialize(encoder: Encoder, value: UUID) {
+    override fun serialize(
+        encoder: Encoder,
+        value: UUID,
+    ) {
         encoder.encodeString(value.toString())
     }
 }
 
 // TODO: Add 'author' field to melody that matches user id
 // TODO: Add 'createdAt' field
+
 /**
  * A class that holds all of the data needed to create a MIDI file along with some metadata.
  *
