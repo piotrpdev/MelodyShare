@@ -61,7 +61,7 @@ class MyApp : Application() {
             // 480 = quarter note
             val tick = (i * 480).toLong()
             val duration = 120.toLong()
-            risingNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
+            risingNotes.add(MelodyNote(UUID.randomUUID(), pitch, velocity, tick, duration))
         }
 
         return MelodyModel(UUID.randomUUID(), "Rising Melody", "The notes get higher", 228f, risingNotes)
@@ -79,7 +79,7 @@ class MyApp : Application() {
             // 480 = quarter note
             val tick = (i * 480).toLong()
             val duration = 120.toLong()
-            loweringNotes.add(MelodyNote(i, pitch, velocity, tick, duration))
+            loweringNotes.add(MelodyNote(UUID.randomUUID(), pitch, velocity, tick, duration))
         }
 
         return MelodyModel(UUID.randomUUID(), "Lowering Melody", "The notes get lower", 228f, loweringNotes)

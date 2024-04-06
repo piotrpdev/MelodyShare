@@ -19,6 +19,7 @@ import dev.piotrp.melodyshare.adapters.MelodyNoteListener
 import dev.piotrp.melodyshare.databinding.ActivityMelodyChangeBinding
 import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
+import java.util.UUID
 
 // TODO: Change to better name
 class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
@@ -140,7 +141,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     @Suppress("UNUSED_PARAMETER")
     fun onAddNoteClicked(view: View) {
         i { "Adding MelodyNote to Melody" }
-        val id = melody.notes.maxOfOrNull { it.id }?.plus(1) ?: 0
+        val id = UUID.randomUUID()
         val tick = melody.notes.maxOfOrNull { it.tick }?.plus(480) ?: 0
 
         melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
