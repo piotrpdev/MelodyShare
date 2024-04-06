@@ -49,6 +49,7 @@ class SettingsFragment : Fragment() {
 
         updateSwitchBasedOnTheme()
 
+        // TODO: Handle offline
         authStateListener = AuthStateListener {
             displayUserDetails()
         }

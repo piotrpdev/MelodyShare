@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
                     // Respond to navigation item 3 click
                     i { "Friends clicked" }
                     // TODO: Implement
-                    navController.navigate(R.id.PlaceholderFragment)
+                    navController.navigate(R.id.FriendsFragment)
                     true
                 }
                 R.id.settings -> {
