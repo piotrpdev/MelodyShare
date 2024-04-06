@@ -14,7 +14,6 @@ import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.FragmentSettingsBinding
 
-
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
@@ -50,9 +49,10 @@ class SettingsFragment : Fragment() {
         updateSwitchBasedOnTheme()
 
         // TODO: Handle offline
-        authStateListener = AuthStateListener {
-            displayUserDetails()
-        }
+        authStateListener =
+            AuthStateListener {
+                displayUserDetails()
+            }
 
         // authStateListener is apparently called once when added here
         app.auth.addAuthStateListener(authStateListener)

@@ -14,13 +14,13 @@ data class FirestoreUser(
     val displayName: String = "",
     val email: String = "",
     // ? List of uuid's
-    val friends: List<String> = arrayListOf()
+    val friends: List<String> = arrayListOf(),
 )
 
 @Serializable
 data class UserMetadata(
     val lastSignedInAt: String = "",
-    val createdAt: String = ""
+    val createdAt: String = "",
 )
 
 @Serializable
@@ -29,6 +29,5 @@ data class ProviderData(
     val uid: String = "",
     val providerId: String = "",
     val displayName: String = "",
-    val email: String = ""
+    val email: String = "",
 )
-
