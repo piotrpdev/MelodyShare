@@ -43,27 +43,17 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.feed -> {
-                    // Respond to navigation item 1 click
                     i { "Feed clicked" }
                     navController.navigate(R.id.FeedFragment)
                     true
                 }
-                R.id.likes -> {
-                    // Respond to navigation item 2 click
-                    // TODO: Implement
-                    i { "Likes clicked" }
-                    navController.navigate(R.id.PlaceholderFragment)
-                    true
-                }
                 R.id.friends -> {
-                    // Respond to navigation item 3 click
                     i { "Friends clicked" }
                     // TODO: Implement
                     navController.navigate(R.id.FriendsFragment)
                     true
                 }
                 R.id.settings -> {
-                    // Respond to navigation item 4 click
                     i { "Settings clicked" }
                     // TODO: Implement
                     navController.navigate(R.id.SettingsFragment)

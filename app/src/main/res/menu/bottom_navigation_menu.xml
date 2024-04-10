@@ -7,17 +7,10 @@
         android:title="@string/feed"/>
 
     <item
-        android:id="@+id/likes"
-        android:enabled="true"
-        android:icon="@drawable/favorite"
-        android:title="@string/likes"/>
-
-    <item
         android:id="@+id/friends"
         android:enabled="true"
         android:icon="@drawable/friends"
         android:title="@string/friends"/>
-
 
     <item
         android:id="@+id/settings"
