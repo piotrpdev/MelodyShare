@@ -69,4 +69,6 @@
     <string name="to_be_implemented">(To be implemented…)</string>
     <string name="play_icon_description">play</string>
     <string name="friend_action_icon_description">Add or remove friend</string>
+    <string name="like">like</string>
+    <string name="cannot_because_offline">Internet connection needed</string>
 </resources>

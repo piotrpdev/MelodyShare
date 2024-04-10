@@ -32,4 +32,6 @@
     <string name="to_be_implemented">(Do wdrożenia…)</string>
     <string name="play_icon_description">graj</string>
     <string name="friend_action_icon_description">Dodaj lub usuń znajomego</string>
+    <string name="like">lubię</string>
+    <string name="cannot_because_offline">Wymagane jest połączenie z internetem</string>
 </resources>

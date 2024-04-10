@@ -42,6 +42,7 @@ object UUIDSerializer : KSerializer<UUID> {
  * @property description The description of the melody.
  * @property bpm The beats per minute of the melody, determines how fast it plays.
  * @property notes A list of [MelodyNote] objects that represent the individual notes of the melody.
+ * @property likedBy A list of UUIDs belonging to [FirestoreUser]s who have liked the melody.
  */
 @Serializable
 @Parcelize
@@ -52,6 +53,7 @@ data class MelodyModel(
     var description: String = "",
     var bpm: Float = 120f,
     var notes: ArrayList<MelodyNote> = ArrayList(),
+    var likedBy: ArrayList<String> = ArrayList(),
 ) : Parcelable
 
 /**
