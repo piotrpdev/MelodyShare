@@ -25,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/not_signed_in"
+        android:visibility="invisible"
         android:textAllCaps="false"
         android:textSize="48sp"
         android:textStyle="italic"

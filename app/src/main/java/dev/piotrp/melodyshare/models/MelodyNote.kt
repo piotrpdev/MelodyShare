@@ -22,10 +22,9 @@ import java.util.UUID
 @Serializable
 @Parcelize
 data class MelodyNote(
-    @Serializable(with = UUIDSerializer::class)
-    var id: UUID = UUID.randomUUID(),
-    var pitch: Int,
-    var velocity: Int,
-    var tick: Long,
-    var duration: Long,
+    var id: String = UUID.randomUUID().toString(),
+    var pitch: Int = 0,
+    var velocity: Int = 0,
+    var tick: Long = 0L,
+    var duration: Long = 0L,
 ) : Parcelable

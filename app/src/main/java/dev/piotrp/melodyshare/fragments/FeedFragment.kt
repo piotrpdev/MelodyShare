@@ -2,11 +2,9 @@ package dev.piotrp.melodyshare.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -21,6 +19,8 @@ import com.github.ajalt.timberkt.i
 import com.github.ajalt.timberkt.w
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.MetadataChanges
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.activities.MelodyChangeActivity
@@ -38,16 +38,13 @@ class FeedFragment : Fragment(), MelodyListener {
     private lateinit var filteredMelodies: MutableList<MelodyModel>
 
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
+    private var melodySnapshotListener: ListenerRegistration? = null
 
     private var _binding: FragmentFeedBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,10 +63,10 @@ class FeedFragment : Fragment(), MelodyListener {
         super.onViewCreated(view, savedInstanceState)
 
         app = activity?.applicationContext as MyApp
-        filteredMelodies = app.melodies.findAll().toMutableList()
+        filteredMelodies = ArrayList()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, app.auth, this)
+        binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, app, this)
 
         // TODO: Handle offline
         authStateListener =
@@ -88,6 +85,7 @@ class FeedFragment : Fragment(), MelodyListener {
     override fun onDestroyView() {
         super.onDestroyView()
         app.auth.removeAuthStateListener(authStateListener)
+        melodySnapshotListener?.remove()
         _binding = null
     }
 
@@ -125,10 +123,6 @@ class FeedFragment : Fragment(), MelodyListener {
             ActivityResultContracts.StartActivityForResult(),
         ) { activityResult ->
             if (activityResult.resultCode == Activity.RESULT_OK) {
-                // TODO: Maybe do a get in case another user changed something
-//                filteredMelodies.addAll(app.melodies.findAll().toMutableList())
-//                binding.recyclerView.adapter!!.notifyDataSetChanged()
-
                 if (activityResult.data == null) {
                     w { "Something went wrong, result data from MelodyChangeActivity is null" }
                     return@registerForActivityResult
@@ -153,6 +147,9 @@ class FeedFragment : Fragment(), MelodyListener {
                 if (activityResult.data!!.hasExtra("melody_edit")) {
                     messageId = R.string.button_clicked_message_saved
 
+                    // TODO: Check if there is a race condition here e.g.
+                    //  if someone saves a melody while you're editing
+                    //  and then you save.
                     val localMelodyIdx = filteredMelodies.indexOfFirst { it.id == melody.id }
 
                     if (localMelodyIdx == -1) {
@@ -160,13 +157,18 @@ class FeedFragment : Fragment(), MelodyListener {
                         return@registerForActivityResult
                     }
 
-                    app.melodies.update(melody)
+                    app.db.collection("melodies")
+                        .document(melody.id)
+                        .set(melody)
                     filteredMelodies[localMelodyIdx] = melody
                     binding.recyclerView.adapter!!.notifyItemChanged(localMelodyIdx)
                 } else {
                     messageId = R.string.button_clicked_message
 
-                    app.melodies.create(melody)
+                    app.db.collection("melodies")
+                        .document(melody.id)
+                        .set(melody)
+
                     filteredMelodies.add(melody)
                     // TODO: Need to notify item was added here but not in other cases
                     //  for some reason. Should check this doesn't cause errors.
@@ -176,7 +178,7 @@ class FeedFragment : Fragment(), MelodyListener {
                 val message = getString(messageId, melody.title)
 
                 i { "Melody added/saved with title \"${melody.title}\" and description \"${melody.description}\" " }
-                d { "Full melody ArrayList: ${app.melodies.findAll()}" }
+                d { "Full melody ArrayList: $filteredMelodies" }
 
                 Snackbar
                     .make(binding.root, message, Snackbar.LENGTH_LONG)
@@ -186,16 +188,43 @@ class FeedFragment : Fragment(), MelodyListener {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun resetFilteredMelodies() {
-        d { "Resetting filtered melodies" }
-        val searchText = binding.searchTextInput.editText!!.text
-        if (searchText.toString() !== "null") {
-            d { "Trying to reset with filter. Removing filter..." }
-            binding.searchTextInput.editText!!.text!!.clear()
-        }
+        if (melodySnapshotListener != null) return
 
-        filteredMelodies.clear()
-        filteredMelodies.addAll(app.melodies.findAll())
-        binding.recyclerView.adapter!!.notifyDataSetChanged()
+        i { "Fetching melodies" }
+        melodySnapshotListener =
+            app.db.collection("melodies")
+                .addSnapshotListener(MetadataChanges.INCLUDE) { snapshot, e ->
+                    if (e != null) {
+                        w { "Error getting documents." }
+                        return@addSnapshotListener
+                    }
+
+                    i { "Success getting snapshot." }
+
+                    if (snapshot != null && snapshot.metadata.hasPendingWrites() && app.connectivityManager?.activeNetwork != null) {
+                        // TODO: Maybe handle this for nicer UX
+                        // https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
+                        i { "Skipping snapshot because it has pending local changes" }
+                        return@addSnapshotListener
+                    }
+
+                    // TODO: Make more efficient, currently adapter is replaced twice,
+                    // Once on change pending and once on metadata confirm
+//                    d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
+
+                    val melodies = snapshot!!.toObjects(MelodyModel::class.java)
+
+                    filteredMelodies.clear()
+                    filteredMelodies.addAll(melodies)
+
+                    binding.recyclerView.adapter!!.notifyDataSetChanged()
+
+                    val searchText = binding.searchTextInput.editText!!.text
+                    if (searchText.toString() !== "null") {
+                        d { "Trying to reset with filter. Removing filter..." }
+                        binding.searchTextInput.editText!!.text!!.clear()
+                    }
+                }
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -209,14 +238,23 @@ class FeedFragment : Fragment(), MelodyListener {
             binding.searchTextInput.error = null
             binding.searchTextInput.isErrorEnabled = false
 
-            // TODO: Fetching from firestore/IO on every search character
-            // change is extremely inefficient, find a better solution
-            filteredMelodies.clear()
-            filteredMelodies.addAll(app.melodies.findAll().filter { it.title.lowercase().contains(parsedTitle.lowercase()) })
+            app.db.collection("melodies")
+                .get()
+                .addOnSuccessListener { snapshot ->
+                    val melodies = snapshot!!.toObjects(MelodyModel::class.java)
 
-            d { "Search result: [${filteredMelodies.joinToString { it.title }}]" }
+                    // TODO: Fetching from firestore/IO on every search character
+                    // change is extremely inefficient, find a better solution
+                    filteredMelodies.clear()
+                    filteredMelodies.addAll(melodies.filter { it.title.lowercase().contains(parsedTitle.lowercase()) })
 
-            binding.recyclerView.adapter!!.notifyDataSetChanged()
+                    d { "Search result: [${filteredMelodies.joinToString { it.title }}]" }
+
+                    binding.recyclerView.adapter!!.notifyDataSetChanged()
+                }
+                .addOnFailureListener { exception ->
+                    w { "Error getting melodies from db: $exception" }
+                }
         } else {
             binding.searchTextInput.isErrorEnabled = true
             binding.searchTextInput.error = getString(R.string.alpha_num_space_error)
@@ -232,28 +270,6 @@ class FeedFragment : Fragment(), MelodyListener {
 
     override fun onLikeButtonClick(melody: MelodyModel) {
         d { "Melody '${melody.title}' like button pressed" }
-        val connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
-
-        // Not full-proof, but should be good enough
-        if (connectivityManager?.activeNetwork == null) {
-            Snackbar
-                .make(binding.root, R.string.cannot_because_offline, Snackbar.LENGTH_LONG)
-                .show()
-
-            return
-        }
-
-        val currentUser = app.auth.currentUser
-
-        if (currentUser == null) {
-            w { "Something went wrong while liking, no user signed in" }
-            Snackbar
-                .make(binding.root, R.string.not_signed_in, Snackbar.LENGTH_LONG)
-                .show()
-
-            return
-        }
 
         val localMelodyIdx = filteredMelodies.indexOfFirst { it.id == melody.id }
 
@@ -263,14 +279,16 @@ class FeedFragment : Fragment(), MelodyListener {
         }
 
         val newMelody = melody.copy().apply {
-            if (likedBy.contains(currentUser.uid)) {
-                likedBy.remove(currentUser.uid)
+            if (likedBy.contains(app.fid)) {
+                likedBy.remove(app.fid)
             } else {
-                likedBy.add(currentUser.uid)
+                likedBy.add(app.fid)
             }
         }
 
-        app.melodies.update(newMelody)
+        app.db.collection("melodies")
+            .document(newMelody.id)
+            .set(newMelody)
         filteredMelodies[localMelodyIdx] = newMelody
         binding.recyclerView.adapter!!.notifyItemChanged(localMelodyIdx)
     }
@@ -311,7 +329,10 @@ class FeedFragment : Fragment(), MelodyListener {
 
         i { "Removing melody (ID: ${lastMelody.id}, Title: ${lastMelody.title})" }
 
-        app.melodies.remove(lastMelody)
+        app.db.collection("melodies")
+            .document(lastMelody.id)
+            .delete()
+
         // TODO: Maybe do a get in case another user changed something
         filteredMelodies.removeIf { it.id == lastMelody.id }
 //        binding.recyclerView.adapter!!.notifyDataSetChanged()

@@ -34,8 +34,6 @@ class FriendsFragment : Fragment(), FriendsListener {
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
     private var friendsSnapshotListener: ListenerRegistration? = null
 
-    private var connectivityManager: ConnectivityManager? = null
-
     private var pendingChangesCount = 0
 
     override fun onCreateView(
@@ -52,9 +50,6 @@ class FriendsFragment : Fragment(), FriendsListener {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
-
-        connectivityManager =
-            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
 
         // TODO: Do this better, add loading spinner, handle offline case
         val layoutManager = LinearLayoutManager(requireActivity())
@@ -98,7 +93,7 @@ class FriendsFragment : Fragment(), FriendsListener {
 
                     i { "Success getting snapshot." }
 
-                    if (snapshot != null && snapshot.metadata.hasPendingWrites() && connectivityManager?.activeNetwork != null) {
+                    if (snapshot != null && snapshot.metadata.hasPendingWrites() && app.connectivityManager?.activeNetwork != null) {
                         // TODO: Maybe handle this for nicer UX
                         // https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
                         i { "Skipping snapshot because it has pending local changes" }

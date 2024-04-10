@@ -130,7 +130,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         val id = UUID.randomUUID()
         val tick = melody.notes.maxOfOrNull { it.tick }?.plus(480) ?: 0
 
-        melody.notes.add(MelodyNote(id, 60, 100, tick, 120))
+        melody.notes.add(MelodyNote(id.toString(), 60, 100, tick, 120))
 
         // TODO: Might need to notify, but not doing it works fine for some reason
 
