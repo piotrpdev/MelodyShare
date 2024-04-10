@@ -44,6 +44,7 @@ class MyApp : Application() {
             i { "Adding example melodies to store" }
 
             // TODO: load example MIDI from asset?
+            // TODO: don't create these if using melodies from Firestore
             melodies.create(generateRisingMelody())
             melodies.create(generateLoweringMelody())
         }

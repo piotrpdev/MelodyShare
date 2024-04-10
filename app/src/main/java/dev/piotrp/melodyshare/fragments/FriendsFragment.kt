@@ -1,5 +1,7 @@
 package dev.piotrp.melodyshare.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -32,6 +34,8 @@ class FriendsFragment : Fragment(), FriendsListener {
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
     private var friendsSnapshotListener: ListenerRegistration? = null
 
+    private var connectivityManager: ConnectivityManager? = null
+
     private var pendingChangesCount = 0
 
     override fun onCreateView(
@@ -48,6 +52,9 @@ class FriendsFragment : Fragment(), FriendsListener {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
 
         // TODO: Do this better, add loading spinner, handle offline case
         val layoutManager = LinearLayoutManager(requireActivity())
@@ -91,16 +98,16 @@ class FriendsFragment : Fragment(), FriendsListener {
 
                     i { "Success getting snapshot." }
 
-                    // TODO: Make more efficient, currently adapter is replaced twice,
-                    // Once on change pending and once on metadata confirm
-//                d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
-
-                    if (snapshot != null && snapshot.metadata.hasPendingWrites()) {
+                    if (snapshot != null && snapshot.metadata.hasPendingWrites() && connectivityManager?.activeNetwork != null) {
                         // TODO: Maybe handle this for nicer UX
                         // https://firebase.google.com/docs/firestore/query-data/listen#events-local-changes
                         i { "Skipping snapshot because it has pending local changes" }
                         return@addSnapshotListener
                     }
+
+                    // TODO: Make more efficient, currently adapter is replaced twice,
+                    // Once on change pending and once on metadata confirm
+//                    d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
 
                     val users: MutableList<FirestoreUser> = arrayListOf()
                     var currentFirestoreUser: FirestoreUser? = null
