@@ -15,22 +15,6 @@ import kotlinx.serialization.encoding.Encoder
 import java.io.File
 import java.util.UUID
 
-// https://stackoverflow.com/a/65398285/19020549
-object UUIDSerializer : KSerializer<UUID> {
-    override val descriptor = PrimitiveSerialDescriptor("UUID", PrimitiveKind.STRING)
-
-    override fun deserialize(decoder: Decoder): UUID {
-        return UUID.fromString(decoder.decodeString())
-    }
-
-    override fun serialize(
-        encoder: Encoder,
-        value: UUID,
-    ) {
-        encoder.encodeString(value.toString())
-    }
-}
-
 // TODO: Add 'author' field to melody that matches user id
 // TODO: Add 'createdAt' field
 
@@ -42,19 +26,56 @@ object UUIDSerializer : KSerializer<UUID> {
  * @property description The description of the melody.
  * @property bpm The beats per minute of the melody, determines how fast it plays.
  * @property notes A list of [MelodyNote] objects that represent the individual notes of the melody.
- * @property likedBy A list of UUIDs belonging to [FirestoreUser]s who have liked the melody.
+ * @property likedBy A list of UUIDs belonging to users who have liked the melody.
  */
 @Serializable
 @Parcelize
 data class MelodyModel(
-    @Serializable(with = UUIDSerializer::class)
-    var id: UUID = UUID.randomUUID(),
+    var id: String = UUID.randomUUID().toString(),
     var title: String = "",
     var description: String = "",
     var bpm: Float = 120f,
     var notes: ArrayList<MelodyNote> = ArrayList(),
     var likedBy: ArrayList<String> = ArrayList(),
-) : Parcelable
+) : Parcelable {
+    companion object {
+        fun generateRisingMelody(): MelodyModel {
+            val risingNotes: ArrayList<MelodyNote> = ArrayList()
+
+            for (i in 0..20) {
+                // 21 is the lowest note that will play
+                // 60 is middle C (C4)
+                // 88 is the highest piano key
+                val pitch = 60 + i
+                val velocity = 100
+                // 480 = quarter note
+                val tick = (i * 480).toLong()
+                val duration = 120.toLong()
+                risingNotes.add(MelodyNote(UUID.randomUUID().toString(), pitch, velocity, tick, duration))
+            }
+
+            return MelodyModel(UUID.randomUUID().toString(), "Rising Melody", "The notes get higher", 228f, risingNotes)
+        }
+
+        fun generateLoweringMelody(): MelodyModel {
+            val loweringNotes: ArrayList<MelodyNote> = ArrayList()
+
+            for (i in 0..20) {
+                // 21 is the lowest note that will play
+                // 60 is middle C (C4)
+                // 88 is the highest piano key
+                val pitch = 60 - i
+                val velocity = 100
+                // 480 = quarter note
+                val tick = (i * 480).toLong()
+                val duration = 120.toLong()
+                loweringNotes.add(MelodyNote(UUID.randomUUID().toString(), pitch, velocity, tick, duration))
+            }
+
+            return MelodyModel(UUID.randomUUID().toString(), "Lowering Melody", "The notes get lower", 228f, loweringNotes)
+        }
+    }
+}
 
 /**
  * Writes the [MelodyModel] as a MIDI file to the specified location.

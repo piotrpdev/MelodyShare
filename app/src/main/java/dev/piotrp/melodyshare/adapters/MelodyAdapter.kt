@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
+import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.CardMelodyBinding
 import dev.piotrp.melodyshare.models.MelodyModel
@@ -15,7 +15,7 @@ interface MelodyListener {
     fun onPlayButtonClick(melody: MelodyModel)
 }
 
-class MelodyAdapter(private var melodies: List<MelodyModel>, private var auth: FirebaseAuth, private val listener: MelodyListener) :
+class MelodyAdapter(private var melodies: List<MelodyModel>, private var app: MyApp, private val listener: MelodyListener) :
     RecyclerView.Adapter<MelodyAdapter.MainHolder>() {
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -33,7 +33,7 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private var auth: F
         position: Int,
     ) {
         val melody = melodies[holder.adapterPosition]
-        holder.bind(melody, auth, listener)
+        holder.bind(melody, app, listener)
     }
 
     override fun getItemCount(): Int = melodies.size
@@ -42,15 +42,13 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private var auth: F
         RecyclerView.ViewHolder(binding.root) {
         fun bind(
             melody: MelodyModel,
-            auth: FirebaseAuth,
+            app: MyApp,
             listener: MelodyListener,
         ) {
             binding.melodyTitle.text = melody.title
             binding.melodyDescription.text = melody.description
 
-            val currentUserId = auth.currentUser?.uid
-
-            binding.likeButton.icon = if (melody.likedBy.contains(currentUserId)) {
+            binding.likeButton.icon = if (melody.likedBy.contains(app.fid)) {
                 AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_filled)
             } else {
                 AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_outlined)
