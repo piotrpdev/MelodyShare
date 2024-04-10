@@ -13,11 +13,6 @@
         tools:layout="@layout/fragment_feed">
     </fragment>
     <fragment
-        android:id="@+id/PlaceholderFragment"
-        android:name="dev.piotrp.melodyshare.fragments.PlaceholderFragment"
-        tools:layout="@layout/fragment_placeholder">
-    </fragment>
-    <fragment
         android:id="@+id/FriendsFragment"
         android:name="dev.piotrp.melodyshare.fragments.FriendsFragment"
         tools:layout="@layout/fragment_friends">
