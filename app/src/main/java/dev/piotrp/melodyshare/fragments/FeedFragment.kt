@@ -2,9 +2,11 @@ package dev.piotrp.melodyshare.fragments
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.media.AudioAttributes
 import android.media.MediaPlayer
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
@@ -18,6 +20,7 @@ import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.github.ajalt.timberkt.w
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.activities.MelodyChangeActivity
@@ -33,6 +36,8 @@ class FeedFragment : Fragment(), MelodyListener {
     private lateinit var app: MyApp
     private var mediaPlayer: MediaPlayer? = null
     private lateinit var filteredMelodies: MutableList<MelodyModel>
+
+    private lateinit var authStateListener: FirebaseAuth.AuthStateListener
 
     private var _binding: FragmentFeedBinding? = null
 
@@ -64,7 +69,16 @@ class FeedFragment : Fragment(), MelodyListener {
         filteredMelodies = app.melodies.findAll().toMutableList()
 
         binding.recyclerView.layoutManager = LinearLayoutManager(requireActivity())
-        binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, this)
+        binding.recyclerView.adapter = MelodyAdapter(filteredMelodies, app.auth, this)
+
+        // TODO: Handle offline
+        authStateListener =
+            FirebaseAuth.AuthStateListener {
+                resetFilteredMelodies()
+            }
+
+        // authStateListener is apparently called once when added here
+        app.auth.addAuthStateListener(authStateListener)
 
         binding.removeMelody.setOnClickListener { onRemoveMelodyClicked(it) }
         binding.addMelody.setOnClickListener { onAddMelodyClicked(it) }
@@ -73,6 +87,7 @@ class FeedFragment : Fragment(), MelodyListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
+        app.auth.removeAuthStateListener(authStateListener)
         _binding = null
     }
 
@@ -170,6 +185,20 @@ class FeedFragment : Fragment(), MelodyListener {
         }
 
     @SuppressLint("NotifyDataSetChanged")
+    private fun resetFilteredMelodies() {
+        d { "Resetting filtered melodies" }
+        val searchText = binding.searchTextInput.editText!!.text
+        if (searchText.toString() !== "null") {
+            d { "Trying to reset with filter. Removing filter..." }
+            binding.searchTextInput.editText!!.text!!.clear()
+        }
+
+        filteredMelodies.clear()
+        filteredMelodies.addAll(app.melodies.findAll())
+        binding.recyclerView.adapter!!.notifyDataSetChanged()
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSearchTextInputChanged(editable: Editable?) {
         val parsedTitle = editable.toString().trim()
 
@@ -199,6 +228,51 @@ class FeedFragment : Fragment(), MelodyListener {
         // TODO: Check if .copy() is needed
         launcherIntent.putExtra("melody_edit", melody.copy())
         getResult.launch(launcherIntent)
+    }
+
+    override fun onLikeButtonClick(melody: MelodyModel) {
+        d { "Melody '${melody.title}' like button pressed" }
+        val connectivityManager =
+            requireActivity().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager?
+
+        // Not full-proof, but should be good enough
+        if (connectivityManager?.activeNetwork == null) {
+            Snackbar
+                .make(binding.root, R.string.cannot_because_offline, Snackbar.LENGTH_LONG)
+                .show()
+
+            return
+        }
+
+        val currentUser = app.auth.currentUser
+
+        if (currentUser == null) {
+            w { "Something went wrong while liking, no user signed in" }
+            Snackbar
+                .make(binding.root, R.string.not_signed_in, Snackbar.LENGTH_LONG)
+                .show()
+
+            return
+        }
+
+        val localMelodyIdx = filteredMelodies.indexOfFirst { it.id == melody.id }
+
+        if (localMelodyIdx == -1) {
+            w { "Something went wrong while liking, can't find melody locally" }
+            return
+        }
+
+        val newMelody = melody.copy().apply {
+            if (likedBy.contains(currentUser.uid)) {
+                likedBy.remove(currentUser.uid)
+            } else {
+                likedBy.add(currentUser.uid)
+            }
+        }
+
+        app.melodies.update(newMelody)
+        filteredMelodies[localMelodyIdx] = newMelody
+        binding.recyclerView.adapter!!.notifyItemChanged(localMelodyIdx)
     }
 
     override fun onPlayButtonClick(melody: MelodyModel) {
