@@ -15,11 +15,6 @@ interface MelodyNoteListener {
         editable: Editable?,
     ): Boolean
 
-    fun onMelodyNoteVelocityTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ): Boolean
-
     fun onMelodyNoteTickTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
@@ -68,8 +63,6 @@ class MelodyNoteAdapter(
         private var bindedMelodyNote: MelodyNote? = null
         private var isPitchBindChange = false
         private var isPitchTextFieldListenerSet = false
-        private var isVelocityBindChange = false
-        private var isVelocityTextFieldListenerSet = false
         private var isTickBindChange = false
         private var isTickTextFieldListenerSet = false
         private var isDurationBindChange = false
@@ -127,22 +120,6 @@ class MelodyNoteAdapter(
                     }
                 }
             }
-            if (!isVelocityTextFieldListenerSet) {
-                isVelocityTextFieldListenerSet = true
-                binding.velocityTextField.editText?.doAfterTextChanged {
-//                    d { "Changing: { pos: $adapterPosition, newId?: ${newMelodyNote?.id ?: "none"}" }
-                    if (isVelocityBindChange) {
-//                        d { "velocity bind change" }
-                        isVelocityBindChange = false
-                    } else {
-                        d { "not a velocity bind change" }
-                        val valid = listener.onMelodyNoteVelocityTextChanged(bindedMelodyNote!!, it)
-                        // TODO: Better error message
-                        binding.velocityTextField.error = if (valid) null else "0-9"
-                        binding.velocityTextField.isErrorEnabled = !valid
-                    }
-                }
-            }
 
             if (!isTickTextFieldListenerSet) {
                 isTickTextFieldListenerSet = true
@@ -180,8 +157,6 @@ class MelodyNoteAdapter(
 
             isPitchBindChange = true
             binding.pitchTextField.editText?.setText(melodyNote.pitch.toString())
-            isVelocityBindChange = true
-            binding.velocityTextField.editText?.setText(melodyNote.velocity.toString())
             isTickBindChange = true
             binding.tickTextField.editText?.setText(melodyNote.tick.toString())
             isDurationBindChange = true

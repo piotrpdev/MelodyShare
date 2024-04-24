@@ -173,19 +173,6 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         return parsedValue != null
     }
 
-    override fun onMelodyNoteVelocityTextChanged(
-        melodyNote: MelodyNote,
-        editable: Editable?,
-    ): Boolean {
-        // TODO: Handle logic and conversion
-        // TODO: Remove for simplicity? (e.g. always 100)
-        i { "Velocity text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.velocity}, New: $editable" }
-        val parsedValue = editable.toString().toIntOrNull()
-        melodyNote.velocity = parsedValue ?: melodyNote.velocity
-
-        return parsedValue != null
-    }
-
     override fun onMelodyNoteTickTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
