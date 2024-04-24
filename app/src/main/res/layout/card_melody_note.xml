@@ -16,48 +16,33 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/velocityTextField"
+            app:layout_constraintEnd_toStartOf="@+id/tickTextField"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="3" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/velocityTextField"
-            android:layout_width="0dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/tickTextField"
-            app:layout_constraintStart_toEndOf="@+id/pitchTextField"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:maxLength="3" />
+                android:maxLength="3"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tickTextField"
             android:layout_width="0dp"
-            android:layout_height="61dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             app:layout_constraintEnd_toStartOf="@+id/durationTextField"
-            app:layout_constraintStart_toEndOf="@+id/velocityTextField"
+            app:layout_constraintStart_toEndOf="@+id/pitchTextField"
             app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="5" />
+                android:maxLength="5"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -74,7 +59,8 @@
             <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxLength="5" />
+                android:maxLength="5"
+                android:maxLines="1" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
