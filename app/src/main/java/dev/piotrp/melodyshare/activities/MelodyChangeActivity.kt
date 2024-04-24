@@ -164,38 +164,107 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
         melodyNote: MelodyNote,
         editable: Editable?,
     ): Boolean {
-        // TODO: Handle logic and conversion
-        // TODO: Restricts to 2 octaves?
         i { "Pitch text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.pitch}, New: $editable" }
-        val parsedValue = editable.toString().toIntOrNull()
-        melodyNote.pitch = parsedValue ?: melodyNote.pitch
+        val parsedValue = editable.toString()
+        val unformattedPitch = formattedMelodyPitchToInt(parsedValue) ?: return false
 
-        return parsedValue != null
+        melodyNote.pitch = unformattedPitch
+
+        return true
     }
 
     override fun onMelodyNoteTickTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
     ): Boolean {
-        // TODO: Handle logic and conversion
-        // TODO: Restrict to max length of eight quarters?
         i { "Tick text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.tick}, New: $editable" }
-        val parsedValue = editable.toString().toLongOrNull()
-        melodyNote.tick = parsedValue ?: melodyNote.tick
+        val parsedValue = editable.toString()
+        val unformattedTick = formattedMelodyTickToLong(parsedValue) ?: return false
 
-        return parsedValue != null
+        melodyNote.tick = unformattedTick
+
+        return true
     }
 
     override fun onMelodyNoteDurationTextChanged(
         melodyNote: MelodyNote,
         editable: Editable?,
     ): Boolean {
-        // TODO: Handle logic and conversion
-        // TODO: Restrict to max length of eight quarters?
         i { "Duration text changed for MelodyNote (ID: ${melodyNote.id}). Old: ${melodyNote.duration}, New: $editable" }
-        val parsedValue = editable.toString().toLongOrNull()
-        melodyNote.duration = parsedValue ?: melodyNote.duration
+        val parsedValue = editable.toString()
+        val unformattedDuration = formattedMelodyDurationToLong(parsedValue) ?: return false
 
-        return parsedValue != null
+        melodyNote.duration = unformattedDuration
+
+        return true
+    }
+
+    companion object {
+        // TODO: Implement sharps and flats: ^[A-G][#|b]?[3-5]$
+        private val melodyPitchRegex = Regex("^[A-G][3-5]\$")
+        private val melodyTickRegex = Regex("^[1-8].[1-3]\$")
+
+        fun formattedMelodyPitchToInt(formattedPitch: String): Int? {
+            if (melodyPitchRegex.matchEntire(formattedPitch) == null) return null
+
+            // C1 = 24
+            // C2 = 36
+            val octave = formattedPitch[1].digitToIntOrNull()?.times(12)?.plus(12)
+            // ? Avoid sharps and flats
+            val note = "C,D,EF,G,A,B".indexOf(formattedPitch[0])
+            if (octave == null || note == -1) return null
+
+            val pitch = octave + note
+
+            // Restrict to two octaves (C3 - C5)
+            // see MelodyView for more info
+            if (pitch !in 48..72) return null
+
+            return pitch
+        }
+
+        fun intToFormattedMelodyPitch(number: Int): String {
+            // C1 = 24
+            // C2 = 36
+            val octave = 1 + ((number - 24) / 12)
+            val note = (number - 24) % 12
+
+            // ? Avoid sharps and flats
+            val formattedNote = "C.D.EF.G.A.B"[note]
+
+            return formattedNote + octave.toString()
+        }
+
+        fun formattedMelodyTickToLong(formattedTick: String): Long? {
+            if (melodyTickRegex.matchEntire(formattedTick) == null) return null
+
+            val parsedSplitValue = formattedTick.split(".")
+            if (parsedSplitValue.size != 2) return null
+
+            val num = parsedSplitValue[0].toIntOrNull()?.minus(1)?.times(480)
+            val remainder = parsedSplitValue[1].toIntOrNull()?.minus(1)?.times((480 / 4))
+            if (num == null || remainder == null) return null
+
+            return (num + remainder).toLong()
+        }
+
+        fun longToFormattedMelodyTick(number: Long): String {
+            val num = 1 + number / 480
+            val remainder = 1 + ((number % 480) / (480 / 4))
+
+            return "${num}.${remainder}"
+        }
+
+        fun formattedMelodyDurationToLong(formattedDuration: String): Long? {
+            val parsedValue = formattedDuration.toIntOrNull() ?: return null
+
+            if (parsedValue !in 1..4) return null
+
+            return (parsedValue * (480 / 4)).toLong()
+        }
+
+        fun longToFormattedMelodyDuration(number: Long): String {
+            return (number / (480 / 4)).toString()
+        }
     }
 }

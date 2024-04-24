@@ -6,6 +6,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doAfterTextChanged
 import androidx.recyclerview.widget.RecyclerView
 import com.github.ajalt.timberkt.d
+import dev.piotrp.melodyshare.activities.MelodyChangeActivity
 import dev.piotrp.melodyshare.databinding.CardMelodyNoteBinding
 import dev.piotrp.melodyshare.models.MelodyNote
 
@@ -115,7 +116,7 @@ class MelodyNoteAdapter(
                         d { "not a pitch bind change" }
                         val valid = listener.onMelodyNotePitchTextChanged(bindedMelodyNote!!, it)
                         // TODO: Better error message
-                        binding.pitchTextField.error = if (valid) null else "0-9"
+                        binding.pitchTextField.error = if (valid) null else "C3-C5"
                         binding.pitchTextField.isErrorEnabled = !valid
                     }
                 }
@@ -132,7 +133,7 @@ class MelodyNoteAdapter(
                         d { "not a tick bind change" }
                         val valid = listener.onMelodyNoteTickTextChanged(bindedMelodyNote!!, it)
                         // TODO: Better error message
-                        binding.tickTextField.error = if (valid) null else "0-9"
+                        binding.tickTextField.error = if (valid) null else "[1-8].[1-3]"
                         binding.tickTextField.isErrorEnabled = !valid
                     }
                 }
@@ -149,18 +150,18 @@ class MelodyNoteAdapter(
                         d { "not a duration bind change" }
                         val valid = listener.onMelodyNoteDurationTextChanged(bindedMelodyNote!!, it)
                         // TODO: Better error message
-                        binding.durationTextField.error = if (valid) null else "0-9"
+                        binding.durationTextField.error = if (valid) null else "1-4"
                         binding.durationTextField.isErrorEnabled = !valid
                     }
                 }
             }
 
             isPitchBindChange = true
-            binding.pitchTextField.editText?.setText(melodyNote.pitch.toString())
+            binding.pitchTextField.editText?.setText(MelodyChangeActivity.intToFormattedMelodyPitch(melodyNote.pitch))
             isTickBindChange = true
-            binding.tickTextField.editText?.setText(melodyNote.tick.toString())
+            binding.tickTextField.editText?.setText(MelodyChangeActivity.longToFormattedMelodyTick(melodyNote.tick))
             isDurationBindChange = true
-            binding.durationTextField.editText?.setText(melodyNote.duration.toString())
+            binding.durationTextField.editText?.setText(MelodyChangeActivity.longToFormattedMelodyDuration(melodyNote.duration))
         }
     }
 }
