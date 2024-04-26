@@ -49,13 +49,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.friends -> {
                     i { "Friends clicked" }
-                    // TODO: Implement
                     navController.navigate(R.id.FriendsFragment)
                     true
                 }
                 R.id.settings -> {
                     i { "Settings clicked" }
-                    // TODO: Implement
                     navController.navigate(R.id.SettingsFragment)
                     true
                 }
@@ -72,7 +70,6 @@ class MainActivity : AppCompatActivity() {
             // https://stackoverflow.com/a/39249024/19020549
             // https://stackoverflow.com/a/57347465/19020549
             // Is it possible to use bindings here?
-            // TODO: Handle offline caching/usage
             Glide.with(this)
                 .asDrawable()
                 .circleCrop()

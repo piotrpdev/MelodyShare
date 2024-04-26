@@ -50,7 +50,6 @@ class SettingsFragment : Fragment() {
 
         updateSwitchBasedOnTheme()
 
-        // TODO: Handle offline
         authStateListener =
             AuthStateListener {
                 displayUserDetails()
@@ -77,7 +76,6 @@ class SettingsFragment : Fragment() {
             return
         }
 
-        // TODO: Handle offline caching/usage
         Glide.with(this)
             .load(currentUser.photoUrl)
             .into(binding.avatarImageView)

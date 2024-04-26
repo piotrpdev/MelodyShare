@@ -11,7 +11,9 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 interface MelodyListener {
     fun onMelodyClick(melody: MelodyModel)
+
     fun onLikeButtonClick(melody: MelodyModel)
+
     fun onPlayButtonClick(melody: MelodyModel)
 }
 
@@ -48,11 +50,12 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private var app: My
             binding.melodyTitle.text = melody.title
             binding.melodyDescription.text = melody.description
 
-            binding.likeButton.icon = if (melody.likedBy.contains(app.fid)) {
-                AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_filled)
-            } else {
-                AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_outlined)
-            }
+            binding.likeButton.icon =
+                if (melody.likedBy.contains(app.fid)) {
+                    AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_filled)
+                } else {
+                    AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_outlined)
+                }
 
             // TODO: Can this be done more efficiently?
             binding.melodyView.setMelody(melody)

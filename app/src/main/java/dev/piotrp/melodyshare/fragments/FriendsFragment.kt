@@ -1,7 +1,5 @@
 package dev.piotrp.melodyshare.fragments
 
-import android.content.Context
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -51,13 +49,11 @@ class FriendsFragment : Fragment(), FriendsListener {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: Do this better, add loading spinner, handle offline case
         val layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerView.layoutManager = layoutManager
 
         app = activity?.applicationContext as MyApp
 
-        // TODO: Handle offline
         authStateListener =
             FirebaseAuth.AuthStateListener {
                 displayUserFriends()

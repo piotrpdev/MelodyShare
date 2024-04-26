@@ -23,7 +23,6 @@ import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
 import java.util.UUID
 
-// TODO: Change to better name
 class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private lateinit var binding: ActivityMelodyChangeBinding
     private var melody = MelodyModel()
@@ -252,7 +251,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
             val num = 1 + number / 480
             val remainder = 1 + ((number % 480) / (480 / 4))
 
-            return "${num}.${remainder}"
+            return "$num.$remainder"
         }
 
         fun formattedMelodyDurationToLong(formattedDuration: String): Long? {
