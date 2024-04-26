@@ -17,6 +17,10 @@ import dev.piotrp.melodyshare.models.MelodyModel
 // https://medium.com/@huseyinozkoc/android-canvas-and-create-custom-view-c6ed11fcc42f
 
 // Taken from https://stackoverflow.com/q/61344444/19020549
+
+/**
+ * View used to visualize [MelodyModel] melodies on a canvas.
+ */
 class MelodyView
     @JvmOverloads
     constructor(

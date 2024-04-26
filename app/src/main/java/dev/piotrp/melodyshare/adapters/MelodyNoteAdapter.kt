@@ -47,10 +47,6 @@ class MelodyNoteAdapter(
         holder: MainHolder,
         position: Int,
     ) {
-        // FIXME: Listeners fire with correct ID but wrong Editable values
-        //  https://stackoverflow.com/a/47787151/19020549
-        //  https://stackoverflow.com/a/64396998/19020549
-//        holder.setIsRecyclable(false)
         val melodyNote = melodyNotes[holder.adapterPosition]
 //        d { "Binding idx: ${holder.adapterPosition} melody: $melodyNote" }
         holder.bind(melodyNote, listener)
@@ -115,7 +111,6 @@ class MelodyNoteAdapter(
                     } else {
                         d { "not a pitch bind change" }
                         val valid = listener.onMelodyNotePitchTextChanged(bindedMelodyNote!!, it)
-                        // TODO: Better error message
                         binding.pitchTextField.error = if (valid) null else "C3-C5"
                         binding.pitchTextField.isErrorEnabled = !valid
                     }
@@ -132,7 +127,6 @@ class MelodyNoteAdapter(
                     } else {
                         d { "not a tick bind change" }
                         val valid = listener.onMelodyNoteTickTextChanged(bindedMelodyNote!!, it)
-                        // TODO: Better error message
                         binding.tickTextField.error = if (valid) null else "[1-8].[1-3]"
                         binding.tickTextField.isErrorEnabled = !valid
                     }
@@ -149,7 +143,6 @@ class MelodyNoteAdapter(
                     } else {
                         d { "not a duration bind change" }
                         val valid = listener.onMelodyNoteDurationTextChanged(bindedMelodyNote!!, it)
-                        // TODO: Better error message
                         binding.durationTextField.error = if (valid) null else "1-4"
                         binding.durationTextField.isErrorEnabled = !valid
                     }

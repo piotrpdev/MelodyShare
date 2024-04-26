@@ -23,7 +23,6 @@ import dev.piotrp.melodyshare.models.MelodyModel
 import dev.piotrp.melodyshare.models.MelodyNote
 import java.util.UUID
 
-// TODO: Change to better name
 class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
     private lateinit var binding: ActivityMelodyChangeBinding
     private var melody = MelodyModel()

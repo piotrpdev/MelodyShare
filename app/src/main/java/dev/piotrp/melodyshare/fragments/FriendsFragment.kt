@@ -51,13 +51,11 @@ class FriendsFragment : Fragment(), FriendsListener {
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        // TODO: Do this better, add loading spinner, handle offline case
         val layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerView.layoutManager = layoutManager
 
         app = activity?.applicationContext as MyApp
 
-        // TODO: Handle offline
         authStateListener =
             FirebaseAuth.AuthStateListener {
                 displayUserFriends()
