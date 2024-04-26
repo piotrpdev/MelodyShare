@@ -12,12 +12,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
-import dev.piotrp.melodyshare.models.MelodyModel
-import dev.piotrp.melodyshare.models.MelodyNote
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber.i
-import java.util.UUID
 
 class MyApp : Application() {
     lateinit var db: FirebaseFirestore

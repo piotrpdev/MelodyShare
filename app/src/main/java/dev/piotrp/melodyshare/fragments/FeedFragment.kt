@@ -278,13 +278,14 @@ class FeedFragment : Fragment(), MelodyListener {
             return
         }
 
-        val newMelody = melody.copy().apply {
-            if (likedBy.contains(app.fid)) {
-                likedBy.remove(app.fid)
-            } else {
-                likedBy.add(app.fid)
+        val newMelody =
+            melody.copy().apply {
+                if (likedBy.contains(app.fid)) {
+                    likedBy.remove(app.fid)
+                } else {
+                    likedBy.add(app.fid)
+                }
             }
-        }
 
         app.db.collection("melodies")
             .document(newMelody.id)

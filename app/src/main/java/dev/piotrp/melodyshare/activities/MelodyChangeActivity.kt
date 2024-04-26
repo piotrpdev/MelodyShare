@@ -251,7 +251,7 @@ class MelodyChangeActivity : AppCompatActivity(), MelodyNoteListener {
             val num = 1 + number / 480
             val remainder = 1 + ((number % 480) / (480 / 4))
 
-            return "${num}.${remainder}"
+            return "$num.$remainder"
         }
 
         fun formattedMelodyDurationToLong(formattedDuration: String): Long? {
