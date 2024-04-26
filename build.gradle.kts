@@ -7,4 +7,5 @@ plugins {
     id("org.jlleitschuh.gradle.ktlint") version "12.1.0" apply false
     id("org.jetbrains.dokka") version "1.9.20" apply false
     kotlin("plugin.serialization") version "1.9.10" apply false
+    id("com.mikepenz.aboutlibraries.plugin") version "11.1.3" apply false
 }
