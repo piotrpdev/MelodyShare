@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.github.ajalt.timberkt.i
 import com.google.firebase.auth.FirebaseAuth.AuthStateListener
+import com.mikepenz.aboutlibraries.LibsBuilder
 import dev.piotrp.melodyshare.MyApp
 import dev.piotrp.melodyshare.R
 import dev.piotrp.melodyshare.databinding.FragmentSettingsBinding
@@ -45,6 +46,7 @@ class SettingsFragment : Fragment() {
         app = activity?.applicationContext as MyApp
 
         binding.themeSwitch.setOnClickListener { onThemeSwitchToggle(it) }
+        binding.aboutButton.setOnClickListener { onAboutButtonClick() }
 
         updateSwitchBasedOnTheme()
 
@@ -119,5 +121,12 @@ class SettingsFragment : Fragment() {
 
         i { "UI_MODE_NIGHT is currently set to $currentlyDark, attempting to invert..." }
         AppCompatDelegate.setDefaultNightMode(if (currentlyDark) AppCompatDelegate.MODE_NIGHT_NO else AppCompatDelegate.MODE_NIGHT_YES)
+    }
+
+    private fun onAboutButtonClick() {
+        LibsBuilder()
+            .withAboutIconShown(true)
+            .withAboutVersionShown(true)
+            .start(requireContext())
     }
 }
