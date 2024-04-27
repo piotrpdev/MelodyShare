@@ -11,8 +11,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.os.bundleOf
 import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
@@ -186,6 +189,28 @@ class FeedFragment : Fragment(), MelodyListener {
             }
         }
 
+    private fun handleSharedMelody(): Boolean {
+        d { "handleSharedMelody() called" }
+        val activityIntent = requireActivity().intent
+
+        if (activityIntent.extras != null) {
+            d { "Checking for shared melody" }
+            val sharedMelodyId = activityIntent.extras!!.getString("shared_melody_title")
+
+            if (sharedMelodyId != null) {
+                d { "Filtering using 'shared_melody_title " }
+                binding.searchTextInput.editText!!.setText(sharedMelodyId)
+
+                d { "Removing 'shared_melody_title' extra" }
+                activityIntent.removeExtra("shared_melody_title")
+
+                return true
+            }
+        }
+
+        return false
+    }
+
     @SuppressLint("NotifyDataSetChanged")
     private fun resetFilteredMelodies() {
         if (melodySnapshotListener != null) return
@@ -210,7 +235,7 @@ class FeedFragment : Fragment(), MelodyListener {
 
                     // TODO: Make more efficient, currently adapter is replaced twice,
                     // Once on change pending and once on metadata confirm
-//                    d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
+                    d { "isFromCache: ${snapshot!!.metadata.isFromCache}, pendingWrites: ${snapshot.metadata.hasPendingWrites()}" }
 
                     val melodies = snapshot!!.toObjects(MelodyModel::class.java)
 
@@ -220,6 +245,14 @@ class FeedFragment : Fragment(), MelodyListener {
                     binding.recyclerView.adapter!!.notifyDataSetChanged()
 
                     val searchText = binding.searchTextInput.editText!!.text
+
+                    if (!snapshot!!.metadata.isFromCache) {
+                        d { "Attempting reset with shared melody check" }
+                        val isHandled = handleSharedMelody()
+                        d { "Shared melody check returned $isHandled" }
+                        if (isHandled) return@addSnapshotListener
+                    }
+
                     if (searchText.toString() !== "null") {
                         d { "Trying to reset with filter. Removing filter..." }
                         binding.searchTextInput.editText!!.text!!.clear()
@@ -266,6 +299,16 @@ class FeedFragment : Fragment(), MelodyListener {
         // TODO: Check if .copy() is needed
         launcherIntent.putExtra("melody_edit", melody.copy())
         getResult.launch(launcherIntent)
+    }
+
+    override fun onShareButtonClick(melody: MelodyModel) {
+        d { "Melody '${melody.title}' share button pressed" }
+        val currentUser = app.auth.currentUser
+
+        if (currentUser?.uid == null) return
+
+        setFragmentResult("melody_shared", bundleOf("melody_shared" to melody.id))
+        findNavController().navigate(R.id.FriendsFragment)
     }
 
     override fun onLikeButtonClick(melody: MelodyModel) {

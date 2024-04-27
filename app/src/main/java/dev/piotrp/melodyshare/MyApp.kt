@@ -1,6 +1,8 @@
 package dev.piotrp.melodyshare
 
 import android.app.Application
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.Context
 import android.net.ConnectivityManager
 import com.github.ajalt.timberkt.Timber
@@ -12,6 +14,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.installations.FirebaseInstallations
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber.i
@@ -20,6 +23,7 @@ class MyApp : Application() {
     lateinit var db: FirebaseFirestore
     lateinit var auth: FirebaseAuth
     lateinit var fid: String
+    lateinit var fmsToken: String
     lateinit var connectivityManager: ConnectivityManager
 
     override fun onCreate() {
@@ -42,6 +46,28 @@ class MyApp : Application() {
 
         i { "Setting auth variable in app" }
         auth = Firebase.auth
+
+        // TODO: Make nicer name
+        val notificationManager = getSystemService(NotificationManager::class.java)
+
+        notificationManager?.createNotificationChannel(
+            NotificationChannel(
+                getString(R.string.default_notification_channel_id),
+                getString(R.string.notification_channel),
+                NotificationManager.IMPORTANCE_LOW,
+            ),
+        )
+
+        Firebase.messaging.subscribeToTopic("shares")
+            .addOnCompleteListener { task ->
+                var msg = "Subscribed to FCM topic"
+
+                if (!task.isSuccessful) {
+                    msg = "Subscribe failed to FCM topic"
+                }
+
+                d { msg }
+            }
     }
 
     companion object {

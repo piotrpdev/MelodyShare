@@ -7,7 +7,9 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.setFragmentResultListener
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.github.ajalt.timberkt.d
 import com.github.ajalt.timberkt.i
 import com.github.ajalt.timberkt.w
 import com.google.firebase.auth.FirebaseAuth
@@ -20,6 +22,8 @@ import dev.piotrp.melodyshare.adapters.FriendsAdapter
 import dev.piotrp.melodyshare.adapters.FriendsListener
 import dev.piotrp.melodyshare.databinding.FragmentFriendsBinding
 import dev.piotrp.melodyshare.models.FirestoreUser
+import dev.piotrp.melodyshare.models.ShareDocument
+import java.util.UUID
 
 class FriendsFragment : Fragment(), FriendsListener {
     private lateinit var app: MyApp
@@ -31,6 +35,8 @@ class FriendsFragment : Fragment(), FriendsListener {
 
     private lateinit var authStateListener: FirebaseAuth.AuthStateListener
     private var friendsSnapshotListener: ListenerRegistration? = null
+
+    private val sharedMelodyContainer = mutableMapOf<String, String>("melody_shared" to "")
 
     private var pendingChangesCount = 0
 
@@ -48,6 +54,14 @@ class FriendsFragment : Fragment(), FriendsListener {
         savedInstanceState: Bundle?,
     ) {
         super.onViewCreated(view, savedInstanceState)
+
+        setFragmentResultListener("melody_shared") { requestKey, bundle ->
+            val result = bundle.getString("melody_shared")
+            d { "FragmentResult: $result" }
+            result?.let {
+                sharedMelodyContainer["melody_shared"] = it
+            }
+        }
 
         val layoutManager = LinearLayoutManager(requireActivity())
         binding.recyclerView.layoutManager = layoutManager
@@ -113,7 +127,7 @@ class FriendsFragment : Fragment(), FriendsListener {
                     }
 
                     // TODO: Do this better, add loading spinner, handle offline case
-                    binding.recyclerView.adapter = FriendsAdapter(users, currentFirestoreUser!!, this)
+                    binding.recyclerView.adapter = FriendsAdapter(users, currentFirestoreUser!!, sharedMelodyContainer, this)
                 }
     }
 
@@ -136,8 +150,28 @@ class FriendsFragment : Fragment(), FriendsListener {
         }
     }
 
+    override fun onShareButtonClick(
+        user: FirestoreUser,
+        currentFirestoreUser: FirestoreUser,
+        melodyShared: String,
+    ) {
+        d { "Share button clicked in friends fragment" }
+        val shareDoc =
+            ShareDocument(
+                UUID.randomUUID().toString(),
+                currentFirestoreUser.uid,
+                user.uid,
+                melodyShared,
+            )
+
+        app.db.collection("shares")
+            .document(shareDoc.id)
+            .set(shareDoc)
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
+        sharedMelodyContainer["melody_shared"] = ""
         app.auth.removeAuthStateListener(authStateListener)
         friendsSnapshotListener?.remove()
         _binding = null

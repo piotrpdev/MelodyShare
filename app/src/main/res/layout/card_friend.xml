@@ -39,6 +39,17 @@
             tools:text="User Name" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/shareButton"
+            style="?attr/materialIconButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:icon="@drawable/share"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/actionButton"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/actionButton"
             style="?attr/materialIconButtonStyle"
             android:layout_width="wrap_content"

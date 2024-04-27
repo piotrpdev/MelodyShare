@@ -1,10 +1,15 @@
 package dev.piotrp.melodyshare.activities
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -14,6 +19,7 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.github.ajalt.timberkt.e
 import com.github.ajalt.timberkt.i
+import com.github.ajalt.timberkt.w
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.OAuthProvider
 import dev.piotrp.melodyshare.MyApp
@@ -58,6 +64,29 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 else -> false
+            }
+        }
+
+        askNotificationPermission()
+    }
+
+    private val requestNotificationsPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                i { "Notification permissions granted" }
+            } else {
+                w { "Notification permissions denied" }
+            }
+        }
+
+    private fun askNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) !=
+                PackageManager.PERMISSION_GRANTED
+            ) {
+                requestNotificationsPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
         }
     }
