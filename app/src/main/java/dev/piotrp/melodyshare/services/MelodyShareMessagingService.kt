@@ -24,7 +24,6 @@ import dev.piotrp.melodyshare.models.ShareMessage
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 
-
 // Adapter from example code at:
 //  https://github.com/firebase/quickstart-android/blob/98e1f9785911b525f7835ebfb3b050e0ef558f13/messaging/app/src/main/java/com/google/firebase/quickstart/fcm/kotlin/MyFirebaseMessagingService.kt
 
@@ -90,39 +89,43 @@ class MelodyShareMessagingService : FirebaseMessagingService() {
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
         // TODO: Use melodyId instead
         intent.putExtra("shared_melody_title", msg.melodyTitle)
-        val pendingIntent = PendingIntent.getActivity(
-            this,
-            requestCode,
-            intent,
-            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        val pendingIntent =
+            PendingIntent.getActivity(
+                this,
+                requestCode,
+                intent,
+                PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT,
+            )
 
         // TODO: Use async
-        val senderBitmap = Glide.with(this)
-            .asBitmap()
-            .load(msg.senderPhoto)
-            .submit()
-            .get()
+        val senderBitmap =
+            Glide.with(this)
+                .asBitmap()
+                .load(msg.senderPhoto)
+                .submit()
+                .get()
 
         val channelId = getString(R.string.default_notification_channel_id)
 
-        val notificationBuilder = NotificationCompat.Builder(this, channelId)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setLargeIcon(senderBitmap)
-            .setContentTitle(getString(R.string.melody_received_title))
-            .setContentText(getString(R.string.melody_received_description, msg.senderName, msg.melodyTitle))
-            .setAutoCancel(true)
-            .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-            .setContentIntent(pendingIntent)
+        val notificationBuilder =
+            NotificationCompat.Builder(this, channelId)
+                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setLargeIcon(senderBitmap)
+                .setContentTitle(getString(R.string.melody_received_title))
+                .setContentText(getString(R.string.melody_received_description, msg.senderName, msg.melodyTitle))
+                .setAutoCancel(true)
+                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                .setContentIntent(pendingIntent)
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         // Since android Oreo notification channel is needed.
-        val channel = NotificationChannel(
-            channelId,
-            getString(R.string.notification_channel),
-            NotificationManager.IMPORTANCE_DEFAULT,
-        )
+        val channel =
+            NotificationChannel(
+                channelId,
+                getString(R.string.notification_channel),
+                NotificationManager.IMPORTANCE_DEFAULT,
+            )
         notificationManager.createNotificationChannel(channel)
 
         val notificationId = 0

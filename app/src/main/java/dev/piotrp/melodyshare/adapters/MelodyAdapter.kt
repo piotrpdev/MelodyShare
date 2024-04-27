@@ -11,6 +11,7 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 interface MelodyListener {
     fun onMelodyClick(melody: MelodyModel)
+
     fun onShareButtonClick(melody: MelodyModel)
 
     fun onLikeButtonClick(melody: MelodyModel)

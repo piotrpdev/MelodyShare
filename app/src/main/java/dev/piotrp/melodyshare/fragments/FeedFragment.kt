@@ -249,7 +249,7 @@ class FeedFragment : Fragment(), MelodyListener {
                     if (!snapshot!!.metadata.isFromCache) {
                         d { "Attempting reset with shared melody check" }
                         val isHandled = handleSharedMelody()
-                        d {"Shared melody check returned $isHandled"}
+                        d { "Shared melody check returned $isHandled" }
                         if (isHandled) return@addSnapshotListener
                     }
 

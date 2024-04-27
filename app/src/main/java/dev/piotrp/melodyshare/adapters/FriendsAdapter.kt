@@ -16,10 +16,11 @@ interface FriendsListener {
         user: FirestoreUser,
         currentFirestoreUser: FirestoreUser,
     )
+
     fun onShareButtonClick(
         user: FirestoreUser,
         currentFirestoreUser: FirestoreUser,
-        melodyShared: String
+        melodyShared: String,
     )
 }
 
@@ -99,8 +100,7 @@ class FriendsAdapter(
                     currentFirestoreUser.friends.contains(user.uid) &&
                     user.friends.contains(currentFirestoreUser.uid) &&
                     !melodyShared.isNullOrBlank()
-                    )
-                {
+                ) {
                     visibility = VISIBLE
                     setOnClickListener { listener.onShareButtonClick(user, currentFirestoreUser, melodyShared) }
                 }

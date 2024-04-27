@@ -70,15 +70,16 @@ class MainActivity : AppCompatActivity() {
         askNotificationPermission()
     }
 
-    private val requestNotificationsPermissionLauncher = registerForActivityResult(
-        ActivityResultContracts.RequestPermission(),
-    ) { isGranted: Boolean ->
-        if (isGranted) {
-            i { "Notification permissions granted" }
-        } else {
-            w { "Notification permissions denied" }
+    private val requestNotificationsPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestPermission(),
+        ) { isGranted: Boolean ->
+            if (isGranted) {
+                i { "Notification permissions granted" }
+            } else {
+                w { "Notification permissions denied" }
+            }
         }
-    }
 
     private fun askNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {

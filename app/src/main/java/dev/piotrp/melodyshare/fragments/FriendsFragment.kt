@@ -156,12 +156,13 @@ class FriendsFragment : Fragment(), FriendsListener {
         melodyShared: String,
     ) {
         d { "Share button clicked in friends fragment" }
-        val shareDoc = ShareDocument(
-            UUID.randomUUID().toString(),
-            currentFirestoreUser.uid,
-            user.uid,
-            melodyShared
-        )
+        val shareDoc =
+            ShareDocument(
+                UUID.randomUUID().toString(),
+                currentFirestoreUser.uid,
+                user.uid,
+                melodyShared,
+            )
 
         app.db.collection("shares")
             .document(shareDoc.id)

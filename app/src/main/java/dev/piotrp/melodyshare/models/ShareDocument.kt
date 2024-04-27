@@ -11,5 +11,5 @@ data class ShareDocument(
     var id: String = UUID.randomUUID().toString(),
     var senderUid: String = "",
     var receiverUid: String = "",
-    var melodyId: String = ""
+    var melodyId: String = "",
 ) : Parcelable

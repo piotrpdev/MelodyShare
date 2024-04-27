@@ -19,7 +19,6 @@ import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber.i
 
-
 class MyApp : Application() {
     lateinit var db: FirebaseFirestore
     lateinit var auth: FirebaseAuth
@@ -55,8 +54,8 @@ class MyApp : Application() {
             NotificationChannel(
                 getString(R.string.default_notification_channel_id),
                 getString(R.string.notification_channel),
-                NotificationManager.IMPORTANCE_LOW
-            )
+                NotificationManager.IMPORTANCE_LOW,
+            ),
         )
 
         Firebase.messaging.subscribeToTopic("shares")
