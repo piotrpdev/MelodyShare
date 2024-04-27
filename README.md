@@ -1,14 +1,27 @@
-# MelodyShare
+<!-- markdownlint-configure-file {
+  "MD033": false,
+  "MD041": false
+} -->
 
-<img align="right" alt="App logo" width="200px" src="app/src/main/ic_launcher-playstore.png" />
+<div align="center">
+
+# MelodyShare
 
 An Android app for sharing melodies with friends!
 
 CA submission for SETU's Mobile Application Development module.
 
-_(Here is the assignment due date)_
+<img alt="App demo" width="500px" src=".github/img/demo.png" />
 
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-24ddc0f5d75046c5622901739e7c5dd533143b0c8e959d652212380cedb1ea36.svg)](https://classroom.github.com/a/ZX5kW5CC)
+</div>
+
+## Features
+
+- [x] Responsive Material Design 3 UI with dark mode support.
+- [x] Create, search, edit, and remove playable melodies with validation and filtering.
+- [x] Store melodies both locally and in the cloud with offline access thanks to Firebase.
+- [x] Get notified when a user shares a melody with you thanks to Firebase Cloud Messaging.
+- [x] English and Polish language support.
 
 ## Setup
 
