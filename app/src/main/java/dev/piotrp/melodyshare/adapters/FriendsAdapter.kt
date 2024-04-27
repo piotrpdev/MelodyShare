@@ -1,6 +1,7 @@
 package dev.piotrp.melodyshare.adapters
 
 import android.view.LayoutInflater
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.RecyclerView
@@ -15,11 +16,17 @@ interface FriendsListener {
         user: FirestoreUser,
         currentFirestoreUser: FirestoreUser,
     )
+    fun onShareButtonClick(
+        user: FirestoreUser,
+        currentFirestoreUser: FirestoreUser,
+        melodyShared: String
+    )
 }
 
 class FriendsAdapter(
     private var friends: List<FirestoreUser>,
     private val currentFirestoreUser: FirestoreUser,
+    private val sharedMelodyContainer: MutableMap<String, String>,
     private val listener: FriendsListener,
 ) : RecyclerView.Adapter<FriendsAdapter.MainHolder>() {
     override fun onCreateViewHolder(
@@ -38,7 +45,7 @@ class FriendsAdapter(
         position: Int,
     ) {
         val friend = friends[holder.adapterPosition]
-        holder.bind(friend, currentFirestoreUser, listener)
+        holder.bind(friend, currentFirestoreUser, sharedMelodyContainer, listener)
     }
 
     override fun getItemCount(): Int = friends.size
@@ -48,6 +55,7 @@ class FriendsAdapter(
         fun bind(
             user: FirestoreUser,
             currentFirestoreUser: FirestoreUser,
+            sharedMelodyContainer: MutableMap<String, String>,
             listener: FriendsListener,
         ) {
             binding.friendName.text = user.displayName
@@ -80,6 +88,22 @@ class FriendsAdapter(
                 }
 
                 setOnClickListener { listener.onActionButtonClick(user, currentFirestoreUser) }
+            }
+
+            binding.shareButton.apply {
+                val melodyShared = sharedMelodyContainer["melody_shared"]
+                d { "melodyContainer: $melodyShared" }
+
+                // TODO: Handle offline
+                if (
+                    currentFirestoreUser.friends.contains(user.uid) &&
+                    user.friends.contains(currentFirestoreUser.uid) &&
+                    !melodyShared.isNullOrBlank()
+                    )
+                {
+                    visibility = VISIBLE
+                    setOnClickListener { listener.onShareButtonClick(user, currentFirestoreUser, melodyShared) }
+                }
             }
         }
     }

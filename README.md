@@ -28,6 +28,10 @@ This project contains some Google Cloud Functions you need to setup in `google_c
     - Environment: 1st gen
     - Trigger: Firebase Authentication - create
 
+  - `sendFCM`
+    - Environment: 1st gen
+    - Trigger: Cloud Firestore - create - `shares/{shareId}`
+
 ## Contributing
 
 - **Linting:** run the `ktlintFormat` Gradle task.

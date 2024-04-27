@@ -1,0 +1,8 @@
+{
+  "name": "send-fcm",
+  "version": "0.0.1",
+  "dependencies": {
+    "firebase-admin": "12.1.0",
+    "@google-cloud/firestore": "^7.0.0"
+  }
+}

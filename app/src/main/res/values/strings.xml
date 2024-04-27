@@ -71,4 +71,8 @@
     <string name="friend_action_icon_description">Add or remove friend</string>
     <string name="like">like</string>
     <string name="cannot_because_offline">Internet connection needed</string>
+    <string name="default_notification_channel_id" translatable="false">melodyshare_notification_channel</string>
+    <string name="notification_channel">MelodyShare Notification Channel</string>
+    <string name="melody_received_title">Melody Received!</string>
+    <string name="melody_received_description">\'%1$s\' shared melody \'%2$s\' with you!</string>
 </resources>

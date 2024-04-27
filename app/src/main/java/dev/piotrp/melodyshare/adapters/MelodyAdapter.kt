@@ -11,6 +11,7 @@ import dev.piotrp.melodyshare.models.MelodyModel
 
 interface MelodyListener {
     fun onMelodyClick(melody: MelodyModel)
+    fun onShareButtonClick(melody: MelodyModel)
 
     fun onLikeButtonClick(melody: MelodyModel)
 
@@ -57,9 +58,13 @@ class MelodyAdapter(private var melodies: List<MelodyModel>, private var app: My
                     AppCompatResources.getDrawable(binding.root.context, R.drawable.favorite_outlined)
                 }
 
+            // TODO: Make this more efficient
+            binding.shareButton.isEnabled = app.connectivityManager?.activeNetwork != null && app.auth.currentUser?.uid != null
+
             // TODO: Can this be done more efficiently?
             binding.melodyView.setMelody(melody)
             binding.root.setOnClickListener { listener.onMelodyClick(melody) }
+            binding.shareButton.setOnClickListener { listener.onShareButtonClick(melody) }
             binding.likeButton.setOnClickListener { listener.onLikeButtonClick(melody) }
             binding.playButton.setOnClickListener { listener.onPlayButtonClick(melody) }
         }

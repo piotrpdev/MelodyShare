@@ -34,4 +34,7 @@
     <string name="friend_action_icon_description">Dodaj lub usuń znajomego</string>
     <string name="like">lubię</string>
     <string name="cannot_because_offline">Wymagane jest połączenie z internetem</string>
+    <string name="notification_channel">Kanał powiadomień MelodyShare</string>
+    <string name="melody_received_title">Melodia odebrana!</string>
+    <string name="melody_received_description">\'%1$s\' udostępnił ci melodię \'%2$s\'!</string>
 </resources>
